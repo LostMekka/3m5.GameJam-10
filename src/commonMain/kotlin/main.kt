@@ -14,7 +14,7 @@ class MyScene : Scene() {
     override suspend fun SContainer.sceneMain() {
         initializeGameResources() // must be the first thing here!
 
-        val gridManager = GridManager(this)
+        val gridManager = GridManager(this){x,y -> println("clicked $x,$y")}
         gridManager.initializeGrid()
 
         createUi()

@@ -1,5 +1,6 @@
 import de.lms.gj10.*
 import de.lms.gj10.minesweeper.*
+import korlibs.korge.input.*
 import korlibs.korge.view.*
 
 data class GridElement(
@@ -14,16 +15,13 @@ val Tile.imageNum : Int get() {
     return number + 2
 }
 
-class GridManager(private val container : SContainer) {
+class GridManager(
+    private val container : SContainer,
+    private val onTileClick : (Int,Int) -> Unit,
+) {
     private val gridElements = mutableListOf<GridElement>()
     private val mineSweeper = generateSolvableMinesweeperGrid(32, 32, 100)
     suspend fun initializeGrid() = container.apply {
-        /*val image = image(resourcesVfs["korge.png"].readBitmap()) {
-        rotation = 45
-        anchor(.5, .5)
-        scale(0.8)
-        position(256, 256)
-    }*/
         for (x in 0 until mineSweeper.width) {
             for (y in 0 until mineSweeper.height) {
                 val tile = mineSweeper[x,y]
@@ -52,6 +50,7 @@ class GridManager(private val container : SContainer) {
         }
         img.position(x * tileScale * tileSize,y * tileScale * tileSize)
         img.scale = tileScale
+        img.onClick { onTileClick(x,y) }
         return img
     }
 }
