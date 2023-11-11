@@ -16,5 +16,7 @@ class MyScene : Scene() {
 
         val gridManager = GridManager(this)
         gridManager.initializeGrid()
+
+        createUi()
     }
 }
