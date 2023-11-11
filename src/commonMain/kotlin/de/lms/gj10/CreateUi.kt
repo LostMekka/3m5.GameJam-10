@@ -10,6 +10,9 @@ import korlibs.korge.ui.*
 import korlibs.korge.view.*
 import korlibs.logger.*
 import korlibs.math.geom.*
+import windowHeight
+import windowWidth
+
 enum class UiBtnType {
     BuildFactory,
 }
@@ -20,6 +23,9 @@ class GameUi(
 ) {
     private val textMoney: TextBlock
     private val myBtn: UIButton
+    private val myBtn2: UIButton
+    private var btnCount: Int = 0
+
     fun onMoneyChanged(newMoney: Long) {
 //        textMoney.plainText = 'test'
         // TODO
@@ -44,6 +50,10 @@ class GameUi(
         )
 
         myBtn = container.generateButton()
+        myBtn2 = container.generateButton()
+        container.generateButton()
+        container.generateButton()
+        container.generateButton()
     }
 
     private fun SContainer.generateButton(
@@ -51,9 +61,10 @@ class GameUi(
         btnSize: Int = 80,
         btnPosX: Int = 20,
         btnPosY: Int = 20,
+        spacing: Int = 8,
     ): UIButton {
         // Initial Create button
-        return uiButton() {
+        val newBtn = uiButton() {
             bgColorOut = Colors.TRANSPARENT
             bgColorDisabled = Colors.TRANSPARENT
             bgColorOver = Colors.TRANSPARENT
@@ -61,7 +72,11 @@ class GameUi(
             keys { down(Key.K) { onBuildBtnPress(UiBtnType.BuildFactory) } }
             onPress { onBuildBtnPress(UiBtnType.BuildFactory) }
 
-            position(100, 100)
+            position(
+                spacing,
+                windowHeight - ((btnCount + 1) * btnSize) // place btn
+                    - ((btnCount + 1) * spacing) // add spacing
+            )
             size(btnSize, btnSize)
             background.radius = RectCorners(btnSize / 12, btnSize / 12, btnSize / 4, btnSize / 12)
 
@@ -86,6 +101,8 @@ class GameUi(
                 position(-btnSize * .1, -btnSize * .1)
             }
         }
+        btnCount++
+        return newBtn
     }
 
 }

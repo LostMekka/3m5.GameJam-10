@@ -4,8 +4,10 @@ import korlibs.korge.scene.*
 import korlibs.korge.view.*
 import korlibs.image.color.*
 import korlibs.math.geom.*
+const val windowWidth = 1024
+const val windowHeight = 768
 
-suspend fun main() = Korge(windowSize = Size(768, 768), backgroundColor = Colors["#2b2b2b"]) {
+suspend fun main() = Korge(windowSize = Size(windowWidth, windowHeight), backgroundColor = Colors["#2b2b2b"]) {
     val sceneContainer = sceneContainer()
     sceneContainer.changeTo { MyScene() }
 }
