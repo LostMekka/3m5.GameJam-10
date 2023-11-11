@@ -44,7 +44,11 @@ class MyScene : Scene() {
         val (tile, building) = tileInfo
         println("tile at (${tile.x}, ${tile.y}) clicked")
         if (building != null) return
-        if (!tile.isRevealed) return
+        if (!tile.isRevealed) {
+            // TODO: dont reveal tiles that easily. need to build something on top first or smth
+            gridManager.reveal(tile.x, tile.y)
+            return
+        }
         if (tile.isBomb) return
         if (tile.number <= 0) return
         val buildingType = currBuildingType
