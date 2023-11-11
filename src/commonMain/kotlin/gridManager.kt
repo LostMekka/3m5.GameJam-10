@@ -21,7 +21,7 @@ class GridManager(
 ) {
     private val gridElements = mutableListOf<GridElement>()
     private val mineSweeper = generateSolvableMinesweeperGrid(32, 32, 100)
-    suspend fun initializeGrid() = container.apply {
+    fun initializeGrid() = container.apply {
         for (x in 0 until mineSweeper.width) {
             for (y in 0 until mineSweeper.height) {
                 val tile = mineSweeper[x,y]
@@ -32,7 +32,7 @@ class GridManager(
         gridElements.sortBy { it.id }
     }
 
-    suspend fun reveal(x : Int, y : Int) {
+    fun reveal(x : Int, y : Int) {
         val tile = mineSweeper[x,y]
         val gridElement = gridElements[tile.id]
         mineSweeper.reveal(tile)
