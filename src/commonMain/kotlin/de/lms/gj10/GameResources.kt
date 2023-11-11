@@ -15,8 +15,8 @@ suspend fun initializeGameResources() {
             img("icons/bomb.png"),
             img("tiles/empty.png"),
             img("icons/question_mark.png"),
-            (0..8).map { img("ui/$it"+"_big.png") },
-            img("sprites/factory_red"),
+            (0..8).map { img("ui/$it.png") },
+            img("sprites/factory_red.png"),
         ),
         GameResources.Images(
             img("ui/glassPanel_cornerBR.png"),
