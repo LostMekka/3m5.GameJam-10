@@ -1,3 +1,6 @@
+import de.lms.gj10.minesweeper.*
+import korlibs.datastructure.*
+import korlibs.image.bitmap.*
 import korlibs.time.*
 import korlibs.korge.*
 import korlibs.korge.scene.*
@@ -5,7 +8,9 @@ import korlibs.korge.tween.*
 import korlibs.korge.view.*
 import korlibs.image.color.*
 import korlibs.image.format.*
+import korlibs.image.tiles.*
 import korlibs.io.file.std.*
+import korlibs.korge.view.tiles.*
 import korlibs.math.geom.*
 import korlibs.math.interpolation.*
 
@@ -19,16 +24,7 @@ class MyScene : Scene() {
         val minDegrees = (-16).degrees
         val maxDegrees = (+16).degrees
 
-        val image = image(resourcesVfs["korge.png"].readBitmap()) {
-            rotation = maxDegrees
-            anchor(.5, .5)
-            scale(0.8)
-            position(256, 256)
-        }
-
-        while (true) {
-            image.tween(image::rotation[minDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
-            image.tween(image::rotation[maxDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
-        }
+        val gridManager = GridManager(this)
+        gridManager.initializeGrid()
     }
 }
