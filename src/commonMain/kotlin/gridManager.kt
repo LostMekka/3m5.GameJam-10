@@ -3,11 +3,20 @@ import de.lms.gj10.minesweeper.*
 import korlibs.korge.input.*
 import korlibs.korge.view.*
 
+
+enum class BuildingType {
+    Factory,
+}
 data class GridElement(
     var image : Image,
     val id : Int,
-    var imageNum : Int = -1, // 0 = hidden, 1 = bomb, 2 = empty uncovered, 3-11 = numbers(1-9)
+    var imageNum : Int = -1, // 0 = hidden, 1 = bomb, 2 = empty uncovered, 3-10 = numbers(1-8), 10+ = buildings
     )
+
+data class TileInfo(
+    val tile : Tile,
+    val currentBuilding : UiBtnType? = null,
+)
 
 val Tile.imageNum : Int get() {
     if (!isRevealed) return 0
@@ -17,7 +26,7 @@ val Tile.imageNum : Int get() {
 
 class GridManager(
     private val container : SContainer,
-    private val onTileClick : (Int,Int) -> Unit,
+    private val onTileClick : (TileInfo) -> Unit,
 ) {
     private val gridElements = mutableListOf<GridElement>()
     private val mineSweeper = generateSolvableMinesweeperGrid(32, 32, 100)
@@ -46,11 +55,13 @@ class GridManager(
             0 -> container.image(gameResources.tiles.hidden)
             1 -> container.image(gameResources.tiles.bomb)
             2 -> container.image(gameResources.tiles.empty)
-            else -> container.image(gameResources.tiles.numbers[imageNum - 2])
+            in 3..10 -> container.image(gameResources.tiles.numbers[imageNum - 2])
+            else -> container.image(gameResources.tiles.factory)
         }
         img.position(x * tileScale * tileSize,y * tileScale * tileSize)
         img.scale = tileScale
-        img.onClick { onTileClick(x,y) }
+        val tile = mineSweeper[x,y];
+        img.onClick { onTileClick(TileInfo(tile, null)) }
         return img
     }
 }

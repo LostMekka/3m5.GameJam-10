@@ -14,7 +14,9 @@ suspend fun initializeGameResources() {
             img("tiles/hidden.png"),
             img("icons/bomb.png"),
             img("tiles/empty.png"),
-            (0..8).map { img("icons/$it.png") },
+            img("icons/question_mark.png"),
+            (0..8).map { img("ui/$it"+"_big.png") },
+            img("sprites/factory_red"),
         ),
         GameResources.Images(
             img("ui/glassPanel_cornerBR.png"),
@@ -34,7 +36,9 @@ class GameResources(
         val hidden: Bitmap,
         val bomb: Bitmap,
         val empty: Bitmap,
+        val unknown: Bitmap,
         val numbers: List<Bitmap>,
+        val factory: Bitmap,
     )
     class Images(
         val glassPanel_cornerBR_Bitmap: Bitmap,
