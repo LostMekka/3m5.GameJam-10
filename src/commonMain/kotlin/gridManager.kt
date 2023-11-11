@@ -8,7 +8,7 @@ enum class BuildingType {
     Factory,
 }
 
-data class Building(
+data class BuildingData(
     var image : Image,
     var type: BuildingType,
 )
@@ -16,14 +16,14 @@ private data class GridElement(
     var image : Image,
     var x : Int,
     var y : Int,
-    var building : Building?,
+    var building : BuildingData?,
     val id : Int,
     var imageNum : Int = -1, // 0 = hidden, 1 = bomb, 2 = empty uncovered, 3-10 = numbers(1-8), 10+ = buildings
     )
 
 data class TileInfo(
     val tile : Tile,
-    val building : Building? = null,
+    val buildingType : BuildingType? = null,
 )
 
 val Tile.imageNum : Int get() {
@@ -69,7 +69,7 @@ class GridManager(
 
     fun build(x: Int, y : Int, buildingType : BuildingType){
         val bitmap = gameResources.tiles.buildings[buildingType] ?: return
-        val building = Building(container.image(bitmap), buildingType)
+        val building = BuildingData(container.image(bitmap), buildingType)
         val tile = mineSweeper[x, y]
         gridElements[tile.id].building = building
         building.image.position(x * tileScale * tileSize, y * tileScale * tileSize)
@@ -92,7 +92,7 @@ class GridManager(
     private fun clickPreProcessing(x : Int, y : Int){
         val tile = mineSweeper[x, y]
         val gridElement =  gridElements[tile.id]
-        onTileClick(TileInfo(tile, gridElement.building))
+        onTileClick(TileInfo(tile, gridElement.building?.type))
     }
 }
 
