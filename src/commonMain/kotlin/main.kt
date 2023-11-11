@@ -34,12 +34,13 @@ class MyScene : Scene() {
         if (!tile.isRevealed) return
         if (tile.isBomb) return
         if (tile.number <= 0) return
-        if (currBuildingType == null) {
+        val buildingType = currBuildingType
+        if (buildingType == null) {
             changeMoney(tile.number.toLong())
         } else {
             changeMoney(-10L)
-            // TODO: build building
-            // gridManager.addBuilding(tile.x, tile.y, currBuildingType)
+            gridManager.build(tile.x, tile.y, buildingType)
+            currBuildingType = null
         }
     }
 
@@ -60,5 +61,6 @@ class MyScene : Scene() {
     private fun changeMoney(diff: Long) {
         money += diff
         ui.onMoneyChanged(money)
+        println("money is now $money")
     }
 }
