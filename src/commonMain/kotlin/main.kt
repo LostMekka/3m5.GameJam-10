@@ -12,6 +12,10 @@ suspend fun main() = Korge(windowSize = Size(windowWidth, windowHeight), backgro
     sceneContainer.changeTo { MyScene() }
 }
 
+private val buildingCosts = mapOf(
+    BuildingType.Factory to 25,
+)
+
 class MyScene : Scene() {
     private lateinit var gridManager: GridManager
     private lateinit var ui: GameUi
@@ -53,8 +57,14 @@ class MyScene : Scene() {
             ui.onBtnTypeChange(null)
             null
         } else {
-            ui.onBtnTypeChange(type)
-            buildingType
+            val cost = buildingCosts[buildingType] ?: 10.also { println("WARNING: no cost for building $buildingType configured") }
+            if (money < cost) {
+                ui.onNotEnoughMoney()
+                null
+            } else {
+                ui.onBtnTypeChange(type)
+                buildingType
+            }
         }
     }
 
