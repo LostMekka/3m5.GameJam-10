@@ -35,6 +35,9 @@ class GameUi(
         )
         // TODO
     }
+    fun onNotEnoughMoney() {
+
+    }
     fun onBtnTypeChange(btnType: UiBtnType?) {
 //        myBtn.bgColorOut = ()
         updateBtnActive(btnType == UiBtnType.BuildFactory, myBtn)
