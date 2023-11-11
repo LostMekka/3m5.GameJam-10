@@ -24,7 +24,7 @@ class GameUi(
 //        textMoney.plainText = 'test'
         // TODO
     }
-    fun onBtnTypeChange(btnType: UiBtnType) {
+    fun onBtnTypeChange(btnType: UiBtnType?) {
 //        myBtn.bgColorOut = ()
         updateBtnActive(btnType == UiBtnType.BuildFactory, myBtn)
 //        color = if UiBtnType = mytype ? RED : BLUE
