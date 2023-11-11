@@ -8,7 +8,7 @@ enum class BuildingType {
     Factory,
 }
 
-public data class Building(
+data class Building(
     var image : Image,
     var type: BuildingType,
 )
@@ -86,14 +86,13 @@ class GridManager(
         }
         img.position(x * tileScale * tileSize, y * tileScale * tileSize)
         img.scale = tileScale
-        val tile = mineSweeper[x, y]
         img.onClick { clickPreProcessing(x, y) }
         return img
     }
     private fun clickPreProcessing(x : Int, y : Int){
         val tile = mineSweeper[x, y]
         val gridElement =  gridElements[tile.id]
-        onTileClick(TileInfo(tile, gridElement.building));
+        onTileClick(TileInfo(tile, gridElement.building))
     }
 }
 
