@@ -1,3 +1,4 @@
+import de.lms.gj10.*
 import korlibs.time.*
 import korlibs.korge.*
 import korlibs.korge.scene.*
@@ -25,6 +26,8 @@ class MyScene : Scene() {
             scale(0.8)
             position(256, 256)
         }
+
+        createUi()
 
         while (true) {
             image.tween(image::rotation[minDegrees], time = 1.seconds, easing = Easing.EASE_IN_OUT)
