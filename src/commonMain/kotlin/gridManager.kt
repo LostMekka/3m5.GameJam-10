@@ -9,6 +9,7 @@ enum class BuildingType {
 }
 data class GridElement(
     var image : Image,
+    var buildImg : Image?,
     val id : Int,
     var imageNum : Int = -1, // 0 = hidden, 1 = bomb, 2 = empty uncovered, 3-10 = numbers(1-8), 10+ = buildings
     )
@@ -35,7 +36,7 @@ class GridManager(
             for (y in 0 until mineSweeper.height) {
                 val tile = mineSweeper[x,y]
                 val img = tileImg(x,y,tile.imageNum)
-                gridElements += GridElement(img,tile.id ,tile.imageNum)
+                gridElements += GridElement(img,null, tile.id ,tile.imageNum)
             }
         }
         gridElements.sortBy { it.id }
@@ -50,17 +51,27 @@ class GridManager(
         gridElement.image = tileImg(x,y,gridElement.imageNum)
     }
 
-    private fun tileImg(x : Int, y : Int, imageNum : Int) : Image{
+    fun build(x: Int, y : Int, building : BuildingType){
+        val bitmap = gameResources.tiles.buildings[building] ?: return
+        val img = container.image(bitmap)
+        gridElements[mineSweeper[x,y].id].buildImg = img
+        img.position(x * tileScale * tileSize, y * tileScale * tileSize)
+        img.scale = tileScale
+        val tile = mineSweeper[x, y]
+        img.onClick { onTileClick(TileInfo(tile, null)) }
+    }
+
+    private fun tileImg(x : Int, y : Int, imageNum : Int) : Image {
         val img = when (imageNum) {
             0 -> container.image(gameResources.tiles.hidden)
             1 -> container.image(gameResources.tiles.bomb)
             2 -> container.image(gameResources.tiles.empty)
             in 3..10 -> container.image(gameResources.tiles.numbers[imageNum - 2])
-            else -> container.image(gameResources.tiles.factory)
+            else -> container.image(gameResources.tiles.unknown)
         }
-        img.position(x * tileScale * tileSize,y * tileScale * tileSize)
+        img.position(x * tileScale * tileSize, y * tileScale * tileSize)
         img.scale = tileScale
-        val tile = mineSweeper[x,y];
+        val tile = mineSweeper[x, y]
         img.onClick { onTileClick(TileInfo(tile, null)) }
         return img
     }
