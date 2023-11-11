@@ -4,6 +4,8 @@ import korlibs.korge.scene.*
 import korlibs.korge.view.*
 import korlibs.image.color.*
 import korlibs.math.geom.*
+import korlibs.time.*
+
 const val windowWidth = 1024
 const val windowHeight = 768
 
@@ -29,6 +31,13 @@ class MyScene : Scene() {
         gridManager.initializeGrid()
 
         ui = GameUi(this, this@MyScene::onButtonClicked)
+
+        addFixedUpdater(1.timesPerSecond) { addIncome() }
+    }
+
+    private fun addIncome() {
+        val income = gridManager.totalFactoryIncome
+        changeMoney(income.toLong())
     }
 
     private fun onTileClicked(tileInfo: TileInfo) {
@@ -71,6 +80,5 @@ class MyScene : Scene() {
     private fun changeMoney(diff: Long) {
         money += diff
         ui.onMoneyChanged(money)
-        println("money is now $money")
     }
 }
