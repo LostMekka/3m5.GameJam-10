@@ -15,6 +15,11 @@ suspend fun initializeGameResources() {
             img("icons/bomb.png"),
             img("tiles/empty.png"),
             (0..8).map { img("icons/$it.png") },
+        ),
+        GameResources.Images(
+            img("ui/glassPanel_cornerBR.png"),
+            img("ui/k.png"),
+            img("sprites/factory_red.png"),
         )
     )
 }
@@ -23,11 +28,17 @@ private suspend fun img(path: String) = resourcesVfs[path].readBitmap()
 
 class GameResources(
     val tiles: Tiles,
+    val images: Images,
 ) {
     class Tiles(
         val hidden: Bitmap,
         val bomb: Bitmap,
         val empty: Bitmap,
         val numbers: List<Bitmap>,
+    )
+    class Images(
+        val glassPanel_cornerBR_Bitmap: Bitmap,
+        val hotkeyBitmap: Bitmap,
+        val iconBitmap: Bitmap,
     )
 }

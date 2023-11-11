@@ -12,20 +12,22 @@ import korlibs.math.geom.*
 
 class GameUi(
     // private val scoreTextField: Text,
+    private val textMoney: TextBlock
 ) {
     fun onMoneyChanged(newMoney: Long) {
+//        textMoney.plainText = 'test'
         // TODO
     }
 }
 
 suspend fun SContainer.createUi(): GameUi {
-//    textBlock(
-//        RichTextData.fromHTML(
-//            "hello <b>world</b>, <font color=red>this</font> is a long text that won't fit!",
-//            RichTextData.Style.DEFAULT.copy(font = DefaultTtfFontAsBitmap)
-//        ),
-//        size = Size(100f, 48f)
-//    )
+    val textMoney = textBlock(
+        RichTextData.fromHTML(
+            "hello <b>world</b>, <font color=red>this</font> is a long text that won't fit!",
+            RichTextData.Style.DEFAULT.copy(font = DefaultTtfFontAsBitmap)
+        ),
+        size = Size(100f, 48f)
+    )
 
 //    uiButton(label = "1") {
 //        position(10, 30 - 20.0)
@@ -54,38 +56,44 @@ suspend fun SContainer.createUi(): GameUi {
 
     return GameUi(
         // TODO: pass score text field as parameter
+        textMoney
     )
 }
 
 private suspend fun SContainer.generateButton(hotkey: String) {
-    val glassPanel_cornerBR_Bitmap: BitmapSlice<out Bitmap> = resourcesVfs["ui/glassPanel_cornerBR.png"].readBitmapSlice()
-    val hotkeyBitmap: BitmapSlice<out Bitmap> = resourcesVfs["ui/k.png"].readBitmapSlice()
-    val iconBitmap: BitmapSlice<out Bitmap> = resourcesVfs["sprites/factory_red.png"].readBitmapSlice()
+//    val glassPanel_cornerBR_Bitmap: BitmapSlice<out Bitmap> = resourcesVfs["ui/glassPanel_cornerBR.png"].readBitmapSlice()
+//    val hotkeyBitmap: BitmapSlice<out Bitmap> = resourcesVfs["ui/k.png"].readBitmapSlice()
+//    val iconBitmap: BitmapSlice<out Bitmap> = resourcesVfs["sprites/factory_red.png"].readBitmapSlice()
+    val btnSize = 80
+    val btnPosX = 20
+    val btnPosY = 20
+
 
     // Create button
-//    uiButton() {
-//        bgColorOut = Colors.TRANSPARENT
-//        bgColorDisabled = Colors.TRANSPARENT
-//        bgColorOver = Colors.TRANSPARENT
-//        bgColorSelected = Colors.TRANSPARENT
-//        // Set the background image
-//        size(100, 100)
-//        image(glassPanel_cornerBR_Bitmap)
-//
-//        // Add icon at the top-left
-//        image(hotkeyBitmap) {
-//            position(5, 5)
-//        }
-//
-//        // Add icon at the bottom-left
-//        image(iconBitmap) {
-//            position(5, height - height / 4)
-//        }
-//        position(300, 380)
-////        anchor = Anchor.BOTTOM_RIGHT
-//        onPress { println("TAPPED ON 3") }
-////        bgColorOut = (0 0, 0, 0);
-//    }
+    uiButton() {
+        bgColorOut = Colors.TRANSPARENT
+        bgColorDisabled = Colors.TRANSPARENT
+        bgColorOver = Colors.TRANSPARENT
+        bgColorSelected = Colors.TRANSPARENT
+        // Set the background image
+        size(btnSize, btnSize)
+        position(10, 10)
+        image(gameResources.images.glassPanel_cornerBR_Bitmap)
+
+        // Add icon at the top-left
+        image(gameResources.images.hotkeyBitmap) {
+            position(5, 5)
+        }
+
+        // Add icon at the bottom-left
+        image(gameResources.images.iconBitmap) {
+            position(0, height - height / 4)
+            size(btnSize / 2, btnSize / 2)
+        }
+//        anchor = Anchor.BOTTOM_RIGHT
+        onPress { println("TAPPED ON 3") }
+//        bgColorOut = (0 0, 0, 0);
+    }
 //    uiButton {
 //        // Set the background image
 ////        image(glassPanel_cornerBR_Bitmap)
