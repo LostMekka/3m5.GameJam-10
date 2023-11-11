@@ -1,3 +1,4 @@
+import de.lms.gj10.*
 import de.lms.gj10.minesweeper.*
 import korlibs.image.format.*
 import korlibs.io.file.std.*
@@ -17,7 +18,7 @@ val Tile.imageNum : Int get() {
 
 class GridManager(private val container : SContainer) {
     private val gridElements = mutableListOf<GridElement>()
-    private val mineSweeper = generateSolvableMinesweeperGrid(20, 20, 10)
+    private val mineSweeper = generateSolvableMinesweeperGrid(32, 32, 100)
     suspend fun initializeGrid() = container.apply {
         /*val image = image(resourcesVfs["korge.png"].readBitmap()) {
         rotation = 45
@@ -46,13 +47,16 @@ class GridManager(private val container : SContainer) {
 
     private suspend fun tileImg(x : Int, y : Int, imageNum : Int) : Image{
         val img = when (imageNum) {
-            0 -> container.image(resourcesVfs["tiles/stone.png"].readBitmap())
-            1 -> container.image(resourcesVfs["icons/bomb.png"].readBitmap())
-            else -> container.image(resourcesVfs["icons/${imageNum - 2}.png"].readBitmap())
+            0 -> container.image(gameResources.tiles.hidden)
+            1 -> container.image(gameResources.tiles.bomb)
+            2 -> container.image(gameResources.tiles.empty)
+            else -> container.image(gameResources.tiles.numbers[imageNum - 2])
         }
-        img.position(x * tileSize,y * tileSize)
+        img.position(x * tileScale * tileSize,y * tileScale * tileSize)
+        img.scale = tileScale
         return img
     }
 }
 
 const val tileSize = 16
+const val tileScale : Double = 1.5

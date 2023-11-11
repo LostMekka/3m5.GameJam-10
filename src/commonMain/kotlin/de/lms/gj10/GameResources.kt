@@ -11,10 +11,10 @@ suspend fun initializeGameResources() {
     if (res != null) return
     res = GameResources(
         GameResources.Tiles(
-            img("tiles/stone.png"),
+            img("tiles/hidden.png"),
             img("icons/bomb.png"),
-            img("tiles/dirt.png"),
-            (1..8).map { img("icons/$it.png") },
+            img("tiles/empty.png"),
+            (0..8).map { img("icons/$it.png") },
         )
     )
 }
