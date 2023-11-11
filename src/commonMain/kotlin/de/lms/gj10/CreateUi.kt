@@ -25,9 +25,14 @@ class GameUi(
     private val myBtn: UIButton
     private val myBtn2: UIButton
     private var btnCount: Int = 0
+    private val defaultSpacing: Int = 8
 
     fun onMoneyChanged(newMoney: Long) {
-//        textMoney.plainText = 'test'
+        textMoney.text = RichTextData.fromHTML(
+//                "hello <b>world</b>, <font color=red>this</font> is a long text that won't fit!",
+            "<font color=gold>$</font> $newMoney",
+            RichTextData.Style.DEFAULT.copy(font = DefaultTtfFontAsBitmap)
+        )
         // TODO
     }
     fun onBtnTypeChange(btnType: UiBtnType?) {
@@ -43,11 +48,13 @@ class GameUi(
     init {
         textMoney = container.textBlock(
             RichTextData.fromHTML(
-                "hello <b>world</b>, <font color=red>this</font> is a long text that won't fit!",
+//                "hello <b>world</b>, <font color=red>this</font> is a long text that won't fit!",
+                "<font color=gold>$</font> 0",
                 RichTextData.Style.DEFAULT.copy(font = DefaultTtfFontAsBitmap)
             ),
-            size = Size(100f, 48f)
+            size = Size(200f, 148f)
         )
+        textMoney.position(windowWidth - textMoney.width - defaultSpacing, defaultSpacing)
 
         myBtn = container.generateButton()
         myBtn2 = container.generateButton()
@@ -61,7 +68,7 @@ class GameUi(
         btnSize: Int = 80,
         btnPosX: Int = 20,
         btnPosY: Int = 20,
-        spacing: Int = 8,
+        spacing: Int = defaultSpacing,
     ): UIButton {
         // Initial Create button
         val newBtn = uiButton() {
