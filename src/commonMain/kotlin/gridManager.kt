@@ -1,7 +1,5 @@
 import de.lms.gj10.*
 import de.lms.gj10.minesweeper.*
-import korlibs.image.format.*
-import korlibs.io.file.std.*
 import korlibs.korge.view.*
 
 data class GridElement(
@@ -45,7 +43,7 @@ class GridManager(private val container : SContainer) {
         gridElement.image = tileImg(x,y,gridElement.imageNum)
     }
 
-    private suspend fun tileImg(x : Int, y : Int, imageNum : Int) : Image{
+    private fun tileImg(x : Int, y : Int, imageNum : Int) : Image{
         val img = when (imageNum) {
             0 -> container.image(gameResources.tiles.hidden)
             1 -> container.image(gameResources.tiles.bomb)
