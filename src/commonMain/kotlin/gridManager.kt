@@ -8,7 +8,7 @@ enum class BuildingType {
     Factory,
 }
 
-private data class Building(
+public data class Building(
     var image : Image,
     var type: BuildingType,
 )
@@ -23,7 +23,7 @@ private data class GridElement(
 
 data class TileInfo(
     val tile : Tile,
-    val currentBuilding : UiBtnType? = null,
+    val building : Building? = null,
 )
 
 val Tile.imageNum : Int get() {
@@ -59,11 +59,11 @@ class GridManager(
     }
 
     fun reveal(x : Int, y : Int) {
-        val tile = mineSweeper[x,y]
-        val gridElement = gridElements[tile.id]
-        mineSweeper.reveal(tile)
+        val oldTile = mineSweeper[x,y]
+        val gridElement = gridElements[oldTile.id]
+        val newTile = mineSweeper.reveal(oldTile)
         gridElement.image.removeFromParent()
-        gridElement.imageNum = tile.imageNum
+        gridElement.imageNum = newTile.imageNum
         gridElement.image = tileImg(x,y,gridElement.imageNum)
     }
 
@@ -74,10 +74,9 @@ class GridManager(
         gridElements[tile.id].building = building
         building.image.position(x * tileScale * tileSize, y * tileScale * tileSize)
         building.image.scale = tileScale
-        building.image.onClick { onTileClick(TileInfo(tile, null)) }
     }
 
-    private fun tileImg(x : Int, y : Int, imageNum : Int) : Image {
+    private fun tileImg(x : Int,y : Int, imageNum: Int) : Image {
         val img = when (imageNum) {
             0 -> container.image(gameResources.tiles.hidden)
             1 -> container.image(gameResources.tiles.bomb)
@@ -88,10 +87,17 @@ class GridManager(
         img.position(x * tileScale * tileSize, y * tileScale * tileSize)
         img.scale = tileScale
         val tile = mineSweeper[x, y]
-        img.onClick { onTileClick(TileInfo(tile, null)) }
+        img.onClick { clickPreProcessing(x, y) }
         return img
     }
+    private fun clickPreProcessing(x : Int, y : Int){
+        val tile = mineSweeper[x, y]
+        val gridElement =  gridElements[tile.id]
+        onTileClick(TileInfo(tile, gridElement.building));
+    }
 }
+
+
 
 const val tileSize = 16
 const val tileScale : Double = 1.5
