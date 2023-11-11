@@ -1,10 +1,14 @@
 package de.lms.gj10
 
+import korlibs.event.*
 import korlibs.image.color.*
 import korlibs.image.font.*
 import korlibs.image.text.*
+import korlibs.korge.input.*
+import korlibs.korge.render.*
 import korlibs.korge.ui.*
 import korlibs.korge.view.*
+import korlibs.logger.*
 import korlibs.math.geom.*
 enum class UiBtnType {
     BuildFactory,
@@ -39,50 +43,47 @@ class GameUi(
             size = Size(100f, 48f)
         )
 
-        myBtn = container.generateButton("a")
+        myBtn = container.generateButton()
     }
 
-    private fun SContainer.generateButton(hotkey: String): UIButton {
-        val btnSize = 500
-        val btnPosX = 20
-        val btnPosY = 20
-
-
+    private fun SContainer.generateButton(
+//        hotkey: String = "K",
+        btnSize: Int = 80,
+        btnPosX: Int = 20,
+        btnPosY: Int = 20,
+    ): UIButton {
         // Initial Create button
         return uiButton() {
             bgColorOut = Colors.TRANSPARENT
             bgColorDisabled = Colors.TRANSPARENT
             bgColorOver = Colors.TRANSPARENT
             bgColorSelected = Colors.TRANSPARENT
-//        colorMul  = Colors.TRANSPARENT
-//        color = Colors.RED
+            keys { down(Key.K) { onBuildBtnPress(UiBtnType.BuildFactory) } }
+            onPress { onBuildBtnPress(UiBtnType.BuildFactory) }
 
-//        bgColorOut = Colors.TRANSPARENT_WHITE
-//        bgColorDisabled = Colors.TRANSPARENT_WHITE
-//        bgColorOver = Colors.TRANSPARENT_WHITE
-//        bgColorSelected = Colors.TRANSPARENT_WHITE
-            // Set the background image
+            position(100, 100)
             size(btnSize, btnSize)
             background.radius = RectCorners(btnSize / 12, btnSize / 12, btnSize / 4, btnSize / 12)
-            position(10, 10)
-            onPress { println("TAPPED ON 3") }
 
+
+            // Background Image
             image(gameResources.images.glassPanel_cornerBR_Bitmap) {
                 smoothing = false
                 size(btnSize, btnSize)
             }
 
-            // Hotkey Image
-            image(gameResources.images.hotkeyBitmap) {
-                smoothing = false
-                position(5, 5)
-            }
-
             // Main Image
             image(gameResources.images.iconBitmap) {
                 smoothing = false
-                position(0, height - height / 4)
-                size(btnSize / 2, btnSize / 2)
+                size(btnSize * .8, btnSize * .8)
+                position(btnSize * .1, btnSize * .1)
+            }
+
+            // Hotkey Image
+            image(gameResources.images.hotkeyBitmap) {
+                smoothing = false
+                size(btnSize * .4, btnSize * .4)
+                position(-btnSize * .1, -btnSize * .1)
             }
         }
     }
