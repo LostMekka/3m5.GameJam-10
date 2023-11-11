@@ -17,6 +17,7 @@ class MyScene : Scene() {
         val gridManager = GridManager(this) { x, y -> println("clicked $x,$y") }
         gridManager.initializeGrid()
 
-        val ui = createUi()
+        val ui = GameUi(this, {})
+        ui.createUi()
     }
 }
