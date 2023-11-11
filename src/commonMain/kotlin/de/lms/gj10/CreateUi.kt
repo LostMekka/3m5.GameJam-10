@@ -10,7 +10,15 @@ import korlibs.korge.ui.uiButton
 import korlibs.korge.view.*
 import korlibs.math.geom.*
 
-suspend fun SContainer.createUi() {
+class GameUi(
+    // private val scoreTextField: Text,
+) {
+    fun onMoneyChanged(newMoney: Long) {
+        // TODO
+    }
+}
+
+suspend fun SContainer.createUi(): GameUi {
 //    textBlock(
 //        RichTextData.fromHTML(
 //            "hello <b>world</b>, <font color=red>this</font> is a long text that won't fit!",
@@ -43,6 +51,10 @@ suspend fun SContainer.createUi() {
 //    }.position(0.0, 32.0)
 
     generateButton("a")
+
+    return GameUi(
+        // TODO: pass score text field as parameter
+    )
 }
 
 private suspend fun SContainer.generateButton(hotkey: String) {
