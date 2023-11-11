@@ -7,9 +7,16 @@ import korlibs.korge.view.*
 enum class BuildingType {
     Factory,
 }
-data class GridElement(
+
+private data class Building(
     var image : Image,
-    var buildImg : Image?,
+    var type: BuildingType,
+)
+private data class GridElement(
+    var image : Image,
+    var x : Int,
+    var y : Int,
+    var building : Building?,
     val id : Int,
     var imageNum : Int = -1, // 0 = hidden, 1 = bomb, 2 = empty uncovered, 3-10 = numbers(1-8), 10+ = buildings
     )
@@ -31,12 +38,21 @@ class GridManager(
 ) {
     private val gridElements = mutableListOf<GridElement>()
     private val mineSweeper = generateSolvableMinesweeperGrid(32, 32, 100)
+    val totalFactoryIncome : Int get(){
+        var income = 0
+        val factories = gridElements.filter { it.building?.type == BuildingType.Factory }
+        for (i in 0 until factories.size){
+            val factoryTile = mineSweeper[factories[i].x, factories[i].y]
+            income += factoryTile.number
+        }
+        return income
+    }
     fun initializeGrid() = container.apply {
         for (x in 0 until mineSweeper.width) {
             for (y in 0 until mineSweeper.height) {
                 val tile = mineSweeper[x,y]
                 val img = tileImg(x,y,tile.imageNum)
-                gridElements += GridElement(img,null, tile.id ,tile.imageNum)
+                gridElements += GridElement(img,x, y, null, tile.id ,tile.imageNum)
             }
         }
         gridElements.sortBy { it.id }
@@ -51,14 +67,14 @@ class GridManager(
         gridElement.image = tileImg(x,y,gridElement.imageNum)
     }
 
-    fun build(x: Int, y : Int, building : BuildingType){
-        val bitmap = gameResources.tiles.buildings[building] ?: return
-        val img = container.image(bitmap)
-        gridElements[mineSweeper[x,y].id].buildImg = img
-        img.position(x * tileScale * tileSize, y * tileScale * tileSize)
-        img.scale = tileScale
+    fun build(x: Int, y : Int, buildingType : BuildingType){
+        val bitmap = gameResources.tiles.buildings[buildingType] ?: return
+        val building = Building(container.image(bitmap), buildingType)
         val tile = mineSweeper[x, y]
-        img.onClick { onTileClick(TileInfo(tile, null)) }
+        gridElements[tile.id].building = building
+        building.image.position(x * tileScale * tileSize, y * tileScale * tileSize)
+        building.image.scale = tileScale
+        building.image.onClick { onTileClick(TileInfo(tile, null)) }
     }
 
     private fun tileImg(x : Int, y : Int, imageNum : Int) : Image {
