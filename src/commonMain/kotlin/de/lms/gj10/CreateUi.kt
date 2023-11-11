@@ -1,11 +1,18 @@
 package de.lms.gj10
 
+import korlibs.event.*
 import korlibs.image.color.*
 import korlibs.image.font.*
 import korlibs.image.text.*
+import korlibs.korge.input.*
+import korlibs.korge.render.*
 import korlibs.korge.ui.*
 import korlibs.korge.view.*
+import korlibs.logger.*
 import korlibs.math.geom.*
+import windowHeight
+import windowWidth
+
 enum class UiBtnType {
     BuildFactory,
 }
@@ -16,11 +23,14 @@ class GameUi(
 ) {
     private val textMoney: TextBlock
     private val myBtn: UIButton
+    private val myBtn2: UIButton
+    private var btnCount: Int = 0
+
     fun onMoneyChanged(newMoney: Long) {
 //        textMoney.plainText = 'test'
         // TODO
     }
-    fun onBtnTypeChange(btnType: UiBtnType) {
+    fun onBtnTypeChange(btnType: UiBtnType?) {
 //        myBtn.bgColorOut = ()
         updateBtnActive(btnType == UiBtnType.BuildFactory, myBtn)
 //        color = if UiBtnType = mytype ? RED : BLUE
@@ -39,52 +49,60 @@ class GameUi(
             size = Size(100f, 48f)
         )
 
-        myBtn = container.generateButton("a")
+        myBtn = container.generateButton()
+        myBtn2 = container.generateButton()
+        container.generateButton()
+        container.generateButton()
+        container.generateButton()
     }
 
-    private fun SContainer.generateButton(hotkey: String): UIButton {
-        val btnSize = 500
-        val btnPosX = 20
-        val btnPosY = 20
-
-
+    private fun SContainer.generateButton(
+//        hotkey: String = "K",
+        btnSize: Int = 80,
+        btnPosX: Int = 20,
+        btnPosY: Int = 20,
+        spacing: Int = 8,
+    ): UIButton {
         // Initial Create button
-        return uiButton() {
+        val newBtn = uiButton() {
             bgColorOut = Colors.TRANSPARENT
             bgColorDisabled = Colors.TRANSPARENT
             bgColorOver = Colors.TRANSPARENT
             bgColorSelected = Colors.TRANSPARENT
-//        colorMul  = Colors.TRANSPARENT
-//        color = Colors.RED
+            keys { down(Key.K) { onBuildBtnPress(UiBtnType.BuildFactory) } }
+            onPress { onBuildBtnPress(UiBtnType.BuildFactory) }
 
-//        bgColorOut = Colors.TRANSPARENT_WHITE
-//        bgColorDisabled = Colors.TRANSPARENT_WHITE
-//        bgColorOver = Colors.TRANSPARENT_WHITE
-//        bgColorSelected = Colors.TRANSPARENT_WHITE
-            // Set the background image
+            position(
+                spacing,
+                windowHeight - ((btnCount + 1) * btnSize) // place btn
+                    - ((btnCount + 1) * spacing) // add spacing
+            )
             size(btnSize, btnSize)
             background.radius = RectCorners(btnSize / 12, btnSize / 12, btnSize / 4, btnSize / 12)
-            position(10, 10)
-            onPress { println("TAPPED ON 3") }
 
+
+            // Background Image
             image(gameResources.images.glassPanel_cornerBR_Bitmap) {
                 smoothing = false
                 size(btnSize, btnSize)
             }
 
-            // Hotkey Image
-            image(gameResources.images.hotkeyBitmap) {
-                smoothing = false
-                position(5, 5)
-            }
-
             // Main Image
             image(gameResources.images.iconBitmap) {
                 smoothing = false
-                position(0, height - height / 4)
-                size(btnSize / 2, btnSize / 2)
+                size(btnSize * .8, btnSize * .8)
+                position(btnSize * .1, btnSize * .1)
+            }
+
+            // Hotkey Image
+            image(gameResources.images.hotkeyBitmap) {
+                smoothing = false
+                size(btnSize * .4, btnSize * .4)
+                position(-btnSize * .1, -btnSize * .1)
             }
         }
+        btnCount++
+        return newBtn
     }
 
 }
