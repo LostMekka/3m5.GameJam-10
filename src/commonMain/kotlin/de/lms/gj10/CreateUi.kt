@@ -73,7 +73,7 @@ class GameUi(
             onPress { onBuildBtnPress(UiBtnType.BuildFactory) }
 
             position(
-                spacing,
+                windowWidth - btnSize - spacing,
                 windowHeight - ((btnCount + 1) * btnSize) // place btn
                     - ((btnCount + 1) * spacing) // add spacing
             )
