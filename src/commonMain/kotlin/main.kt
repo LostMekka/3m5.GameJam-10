@@ -11,12 +11,25 @@ suspend fun main() = Korge(windowSize = Size(768, 768), backgroundColor = Colors
 }
 
 class MyScene : Scene() {
+    private lateinit var gridManager: GridManager
+    private lateinit var ui: GameUi
+    private var money = 0L
+    private var currBuildingType: Nothing? = null // TODO: replace type
+
     override suspend fun SContainer.sceneMain() {
         initializeGameResources() // must be the first thing here!
 
-        val gridManager = GridManager(this) { x, y -> println("clicked $x,$y") }
+        gridManager = GridManager(this, this@MyScene::onTileClicked)
         gridManager.initializeGrid()
 
-        val ui = GameUi(this, {})
+        ui = GameUi(this, this@MyScene::onButtonClicked)
+    }
+
+    fun onTileClicked(tileInfo: TileInfo) {
+
+    }
+
+    fun onButtonClicked(type: UiBtnType) {
+
     }
 }
