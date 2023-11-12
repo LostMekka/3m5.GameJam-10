@@ -118,7 +118,7 @@ class GridManager(
             }
             BuildingType.Turret -> {
                 building.timeLeft = 1 // shooting frequency
-                building.range = 2.0
+                building.range = 3.0
                 building.image.addFixedUpdater(2.timesPerSecond) { shoot(mineSweeper[x,y].id, 10) }
             }
             BuildingType.Nest -> {
