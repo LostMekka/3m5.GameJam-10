@@ -1,5 +1,7 @@
 package de.lms.gj10.minesweeper
 
+import kotlin.math.*
+
 class Grid(
     val width: Int,
     private val tiles: Array<Tile>,
@@ -114,9 +116,19 @@ class Grid(
     private fun idOf(x: Int, y: Int) = x + y * width
 
     companion object {
-        fun generate(width: Int, height: Int, bombCount: Int): Grid {
+        fun generate(width: Int, height: Int, bombCount: Int, startingAreaSize: Double): Grid {
             val size = width * height
-            val bombIndices = (0..<size).sample(bombCount).toSet()
+            val bombIndices = (0..<size)
+                .filter {
+                    val x = it % width
+                    val y = it / width
+                    val d1 = x * x + y * y
+                    val d2 = (width - 1 - x) * (width - 1 - x) + (height - 1 - y) * (height - 1 - y)
+                    val dMin = startingAreaSize * startingAreaSize
+                    abs(x - y) > 2 && d1 > dMin && d2 > dMin
+                }
+                .sample(bombCount)
+                .toSet()
             val tiles = Array(size) {
                 Tile(
                     id = it,
@@ -128,7 +140,8 @@ class Grid(
             }
             val grid = Grid(width, tiles)
             grid.updateNumbers()
-            grid.revealStartingArea()
+            grid.autoReveal(0, 0)
+            grid.autoReveal(width - 1, height - 1)
             return grid
         }
 

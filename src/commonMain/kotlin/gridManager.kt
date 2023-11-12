@@ -53,7 +53,7 @@ class GridManager(
     private val onTileClick : (TileInfo) -> Unit,
 ) {
     private val gridElements = mutableListOf<GridElement>()
-    private val mineSweeper = generateSolvableMinesweeperGrid(32, 32, 100)
+    private val mineSweeper = generateSolvableMinesweeperGrid(32, 32, 150)
     val totalExtractorIncome : Int get(){
         return gridElements
             .filter { it.building?.type == BuildingType.Extractor }
