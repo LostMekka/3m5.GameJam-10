@@ -15,10 +15,10 @@ enum class BuildingType(
 ) {
     Base(0L, 1L),
     Nest(0L, 0L),
-    Extractor(25L, 1L),
-    Drill(25L, 1L),
+    Extractor(25L, 3L),
+    Drill(25L, 2L),
     Turret(25L, 1L),
-    Turret2(25L, 1L),
+    Turret2(25L, 2L),
     Refinery(25L, 1L),
 }
 
