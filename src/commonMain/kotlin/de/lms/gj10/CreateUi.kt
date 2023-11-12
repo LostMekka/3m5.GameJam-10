@@ -1,6 +1,7 @@
 package de.lms.gj10
 
 import BuildingType
+import buildingCosts
 import korlibs.event.*
 import korlibs.image.bitmap.*
 import korlibs.image.color.*
@@ -18,6 +19,7 @@ class GameUi(
     private val container : SContainer,
     private val onBuildBuildingBtnPress : (BuildingType) -> Unit,
 //    private val onBuildUnitBtnPress : (UnitType) -> Unit,
+    private val costTextBlocks: MutableMap<BuildingType, TextBlock> = mutableMapOf()
 ) {
     private var btnCount: Int = 0
     private val defaultSpacing: Int = 8
@@ -27,34 +29,49 @@ class GameUi(
     private val textPosX = windowWidth - textWidth - defaultSpacing
 
     private val textMoney: TextBlock
+    private var money: Long = 0
     private val textScore: TextBlock
     private val btnBuildingExcavator: UIButton
     private val btnBuildingExtractor: UIButton
     private val btnBuildingTurret: UIButton
 
-    fun getMoneyText(newMoney: Long): RichTextData {
+    private fun getMoneyText(newMoney: Long): RichTextData {
         return RichTextData.fromHTML(
             "<font color=gold>$</font> <font color=green>$newMoney</font>",
             RichTextData.Style.DEFAULT.copy(font = DefaultTtfFontAsBitmap)
         )
     }
-    fun getScoreText(newScore: Long): RichTextData {
+    private fun getScoreText(newScore: Long): RichTextData {
         return RichTextData.fromHTML(
             "<font color=lightblue>Score</font> $newScore",
             RichTextData.Style.DEFAULT.copy(font = DefaultTtfFontAsBitmap)
         )
     }
+    private fun getCostText(newCost: Int): RichTextData {
+        return RichTextData.fromHTML(
+            "<font color=white><b>$newCost</b></font>",
+            RichTextData.Style.DEFAULT.copy(font = DefaultTtfFontAsBitmap)
+        )
+    }
 
     fun onMoneyChanged(newMoney: Long) {
+        money = newMoney
         textMoney.text = getMoneyText(newMoney)
     }
     fun onNotEnoughMoney() {
 
     }
-    fun onBuildingTypeChange(btnType: BuildingType?) {
-        updateBtnActive(btnType == BuildingType.Excavator, btnBuildingExcavator)
-        updateBtnActive(btnType == BuildingType.Extractor, btnBuildingExtractor)
-        updateBtnActive(btnType == BuildingType.Turret, btnBuildingTurret)
+    fun onBuildingTypeChange(buildingType: BuildingType?) {
+        updateBtnActive(buildingType == BuildingType.Excavator, btnBuildingExcavator)
+        updateBtnActive(buildingType == BuildingType.Extractor, btnBuildingExtractor)
+        updateBtnActive(buildingType == BuildingType.Turret, btnBuildingTurret)
+    }
+    fun onBuildingCostChange(buildingType: BuildingType, newCost: Int) {
+        // Retrieve the cost TextBlock associated with the buildingType
+        val costTextBlock = costTextBlocks[buildingType]
+
+        // Update the cost TextBlock if found
+        costTextBlock?.text = getCostText(newCost)
     }
 
     private fun updateBtnActive(active: Boolean, btn: UIButton) {
@@ -81,17 +98,20 @@ class GameUi(
         btnBuildingExcavator = container.generateButton(
             mainImg = gameResources.tiles.buildings.getValue(BuildingType.Excavator),
             type = BuildingType.Excavator,
-            hotKey = 'e'
+            hotKey = 'e',
+            cost = buildingCosts.getValue(BuildingType.Excavator),
         )
         btnBuildingExtractor = container.generateButton(
             mainImg = gameResources.tiles.buildings.getValue(BuildingType.Extractor),
             type = BuildingType.Extractor,
-            hotKey = 'w'
+            hotKey = 'w',
+            cost = buildingCosts.getValue(BuildingType.Extractor),
         )
         btnBuildingTurret = container.generateButton(
             mainImg = gameResources.tiles.buildings.getValue(BuildingType.Turret),
             type = BuildingType.Turret,
-            hotKey = 'q'
+            hotKey = 'q',
+            cost = buildingCosts.getValue(BuildingType.Turret),
         )
     }
 
@@ -110,9 +130,11 @@ class GameUi(
         btnPosX: Int = windowWidth,
         btnPosY: Int = windowHeight,
         spacing: Int = defaultSpacing,
+
         mainImg: Bitmap,
         hotKey: Char? = null,
-        type: BuildingType
+        type: BuildingType,
+        cost: Int,
     ): UIButton {
         val validHotKey = hotKey?.takeIf { it in 'a'..'z' }
 
@@ -160,6 +182,23 @@ class GameUi(
                 position(btnSize * .1, btnSize * .1)
                 zIndex=-1.0
             }
+
+
+            uiMaterialLayer() {
+                size(btnSize * .7, 20)
+                position(btnSize * .26, -btnSize * .06)
+                radius = RectCorners(4f, 4f, 4f, 4f)
+                bgColor = RGBA(0x00, 0x00, 0x00, 0x87)
+                borderColor = Colors.LIGHTBLUE
+                borderSize = 2.0
+            }
+            val costTextBlock = textBlock(
+                getCostText(cost),
+                size = Size(btnSize * .65, 15),
+            )
+            costTextBlock.position(btnSize * .32, -btnSize * .03)
+            // Store the reference to the cost TextBlock
+            costTextBlocks[type] = costTextBlock
 
             val hotKeyBitmap =  gameResources.images.hotkeyBtnBitmapMap[validHotKey]
             if (validHotKey != null && hotKeyBitmap != null) {
