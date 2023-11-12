@@ -19,6 +19,7 @@ enum class BuildingType {
 data class BuildingData(
     var image : Image,
     var type: BuildingType,
+    var timeLeft: Int = 0,
 )
 
 enum class UnitType {
@@ -54,7 +55,7 @@ class GridManager(
     private val onTileClick : (TileInfo) -> Unit,
 ) {
     private val gridElements = mutableListOf<GridElement>()
-    private val mineSweeper = generateSolvableMinesweeperGrid(32, 32, 150)
+    private val mineSweeper = generateSolvableMinesweeperGrid(gridWidth, gridHeight, 150)
     val totalExtractorIncome : Int get(){
         return gridElements
             .filter { it.building?.type == BuildingType.Extractor }
@@ -90,10 +91,16 @@ class GridManager(
         gridElements[tile.id].building = building
         building.image.position(x * tileScale * tileSize, y * tileScale * tileSize)
         building.image.scale = tileScale
-        if (building.type == BuildingType.Excavator) building.image.addFixedUpdater(0.1.timesPerSecond) { excavate(x,y) }
+        if (building.type == BuildingType.Excavator){
+            building.timeLeft = 10
+            building.image.addFixedUpdater(1.timesPerSecond) { excavate(x,y,building) }
+        }
     }
 
-    private fun excavate(x : Int, y : Int){
+    private fun excavate(x : Int, y : Int, building : BuildingData){
+        building.timeLeft--
+        if (building.timeLeft > 0) return
+        building.timeLeft = 0
         gridElements[mineSweeper[x,y].id].building?.image?.removeFromParent()
         reveal(x,y)
     }
@@ -129,5 +136,7 @@ class GridManager(
     }
 }
 
+const val gridWidth = 32
+const val gridHeight = 32
 const val tileSize = 16
 const val tileScale : Double = 1.5

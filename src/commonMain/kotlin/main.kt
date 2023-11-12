@@ -15,7 +15,9 @@ suspend fun main() = Korge(windowSize = Size(windowWidth, windowHeight), backgro
 }
 
 val buildingCosts = mapOf(
-    BuildingType.Factory to 25,
+    BuildingType.Excavator to 25,
+    BuildingType.Extractor to 25,
+    BuildingType.Turret to 25,
 )
 
 class MyScene : Scene() {
@@ -45,8 +47,8 @@ class MyScene : Scene() {
         println("tile at (${tile.x}, ${tile.y}) clicked")
         if (building != null) return
         if (!tile.isRevealed && currBuildingType != BuildingType.Excavator) return
-        if (tile.isBomb) return
-        if (tile.number <= 0) return
+        //if (tile.isBomb) return
+        //if (tile.number <= 0) return
         val buildingType = currBuildingType
         if (buildingType == null) {
             changeMoney(tile.number.toLong())
