@@ -20,6 +20,7 @@ class GameUi(
     private val defaultSpacing: Int = 10
     private val costTextBlocks: MutableMap<BuildingType, TextBlock> = mutableMapOf()
     private val selectIcons: MutableMap<BuildingType, Image> = mutableMapOf()
+    private val buttons: MutableMap<BuildingType, UIButton> = mutableMapOf()
 
     private val textWidth = 100f
     private val textHeight = 48f
@@ -54,6 +55,14 @@ class GameUi(
     fun onMoneyChanged(newMoney: Long) {
         money = newMoney
         textMoney.text = getMoneyText(newMoney)
+
+        for((buildingType, btn) in buttons) {
+            if (buildingType.cost > newMoney) {
+                btn.colorMul = MaterialColors.GRAY_700
+            } else {
+                btn.colorMul = Colors.WHITE
+            }
+        }
     }
 
     fun onNotEnoughMoney() {
@@ -228,6 +237,9 @@ class GameUi(
                 }
             }
         }
+
+        // Store the reference to the cost TextBlock
+        buttons[type] = newBtn
 
         btnCount++
         return newBtn

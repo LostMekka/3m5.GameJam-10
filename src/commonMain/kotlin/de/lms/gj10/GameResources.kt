@@ -1,7 +1,5 @@
 package de.lms.gj10
 
-import BuildingType
-import UnitType
 import korlibs.image.bitmap.*
 import korlibs.image.format.*
 import korlibs.io.file.std.*
