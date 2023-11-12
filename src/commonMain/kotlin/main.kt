@@ -14,10 +14,10 @@ suspend fun main() = Korge(windowSize = Size(windowWidth, windowHeight), backgro
     sceneContainer.changeTo { MyScene() }
 }
 
-private val buildingCosts = mapOf(
-    BuildingType.Excavator to 25,
-    BuildingType.Extractor to 25,
-    BuildingType.Turret to 25,
+val buildingCosts = mapOf(
+    BuildingType.Excavator to 25L,
+    BuildingType.Extractor to 25L,
+    BuildingType.Turret to 25L,
 )
 
 class MyScene : Scene() {
@@ -43,20 +43,22 @@ class MyScene : Scene() {
     }
 
     private fun onTileClicked(tileInfo: TileInfo) {
+        val buildingType = currBuildingType
         val (tile, building) = tileInfo
         println("tile at (${tile.x}, ${tile.y}) clicked")
         if (building != null) return
-        if (!tile.isRevealed && currBuildingType != BuildingType.Excavator) return
+        if (!tile.isRevealed && buildingType != BuildingType.Excavator) return
         //if (tile.isBomb) return
         //if (tile.number <= 0) return
-        val buildingType = currBuildingType
         if (buildingType == null) {
             changeMoney(tile.number.toLong())
         } else {
-            changeMoney(-10L)
+            changeMoney(buildingCosts.getValue(buildingType))
             gridManager.build(tile.x, tile.y, buildingType)
-            currBuildingType = null
-            ui.onBuildingTypeChange(null)
+            if (!keys.shift) {
+                currBuildingType = null
+                ui.onBuildingTypeChange(null)
+            }
         }
     }
 
@@ -75,7 +77,7 @@ class MyScene : Scene() {
             ui.onBuildingTypeChange(null)
             null
         } else {
-            val cost = buildingCosts[buildingType] ?: 10.also { println("WARNING: no cost for building $buildingType configured") }
+            val cost = buildingCosts[buildingType] ?: 1L.also { println("WARNING: no cost for building $buildingType configured") }
             if (money < cost) {
                 ui.onNotEnoughMoney()
                 null
