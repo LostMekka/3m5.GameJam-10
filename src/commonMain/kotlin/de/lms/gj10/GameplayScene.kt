@@ -1,5 +1,6 @@
 package de.lms.gj10
 
+import korlibs.event.*
 import korlibs.korge.scene.*
 import korlibs.korge.view.*
 import korlibs.time.*
@@ -14,7 +15,7 @@ class GameplayScene : Scene() {
     override suspend fun SContainer.sceneMain() {
         initializeGameResources() // must be the first thing here!
 
-        gridManager = GridManager(this, this@GameplayScene::onTileClicked)
+        gridManager = GridManager(this, input, this@GameplayScene::onTileClicked)
         gridManager.initializeGrid()
 
         unitManager = UnitManager(this, gridManager)
@@ -29,7 +30,12 @@ class GameplayScene : Scene() {
         changeMoney(income.toLong())
     }
 
-    private fun onTileClicked(tileInfo: TileInfo) {
+    private fun onTileClicked(tileInfo: TileInfo, button: MouseButton) {
+        if (button == MouseButton.RIGHT) {
+            currBuildingType = null
+            ui.onBuildingTypeChange(null)
+            return
+        }
         val buildingType = currBuildingType
         val (tile, building) = tileInfo
         println("tile at (${tile.x}, ${tile.y}) clicked")
@@ -37,6 +43,7 @@ class GameplayScene : Scene() {
         if (buildingType == null) {
             changeMoney(tile.number.toLong())
         } else {
+            if (!hasEnoughMoney(buildingType.cost)) return
             // Building conditions:
             if (!gridManager.hasRevealedNeighbor(tile.x, tile.y)) return
             if (buildingType == BuildingType.Drill && tile.isRevealed) return
@@ -54,10 +61,10 @@ class GameplayScene : Scene() {
                     if (!tile.isRevealed) return
                 }
             }
-            // building cost and actual build call
+            // build call
             changeMoney(-buildingType.cost)
             gridManager.build(tile.x, tile.y, buildingType)
-            if (!keys.shift) {
+            if (!input.keys.pressing(Key.SHIFT)) {
                 currBuildingType = null
                 ui.onBuildingTypeChange(null)
             }
@@ -70,14 +77,17 @@ class GameplayScene : Scene() {
             ui.onBuildingTypeChange(null)
             null
         } else {
-            if (money < buildingType.cost) {
-                ui.onNotEnoughMoney()
-                null
-            } else {
+            if (hasEnoughMoney(buildingType.cost)){
                 ui.onBuildingTypeChange(buildingType)
                 buildingType
-            }
+            } else null
         }
+    }
+
+    private fun hasEnoughMoney(cost: Long):  Boolean{
+        if (money >= cost) return true
+        ui.onNotEnoughMoney()
+        return false
     }
 
     private fun changeMoney(diff: Long) {

@@ -1,14 +1,15 @@
 package de.lms.gj10
 
-//TODO:
 // bases
 // attack function
+//TODO:
 // bugfix shift
 // background image
 // turrets
 
 
 import de.lms.gj10.minesweeper.*
+import korlibs.event.*
 import korlibs.image.color.*
 import korlibs.korge.input.*
 import korlibs.korge.view.*
@@ -43,8 +44,9 @@ private val Tile.imageNum : Int get() {
 }
 
 class GridManager(
-    private val container : SContainer,
-    private val onTileClick : (TileInfo) -> Unit,
+    private val container: SContainer,
+    private val input: Input,
+    private val onTileClick: (TileInfo, MouseButton) -> Unit,
 ) {
 
     private val gridElements = mutableListOf<GridElement>()
@@ -150,12 +152,12 @@ class GridManager(
         img.scale = tileSize / img.size.width
         if (x <= 1 && y <= 1) return img
         if (x >= gridWidth-2 && y >= gridHeight-2) return img
-        img.onClick { clickPreProcessing(x, y) }
+        img.onClick { clickPreProcessing(x, y, it) }
         return img
     }
-    private fun clickPreProcessing(x : Int, y : Int){
+    private fun clickPreProcessing(x: Int, y: Int, mouseEvents: MouseEvents){
         val tile = mineSweeper[x, y]
         val gridElement =  gridElements[tile.id]
-        onTileClick(TileInfo(tile = tile, buildingType = gridElement.building?.type))
+        onTileClick(TileInfo(tile = tile, buildingType = gridElement.building?.type), mouseEvents.button)
     }
 }
