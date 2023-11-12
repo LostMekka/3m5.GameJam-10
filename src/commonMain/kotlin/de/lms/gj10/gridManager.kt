@@ -9,6 +9,7 @@ package de.lms.gj10
 
 import de.lms.gj10.minesweeper.*
 import korlibs.event.*
+import korlibs.image.bitmap.*
 import korlibs.image.color.*
 import korlibs.image.vector.*
 import korlibs.korge.input.*
@@ -25,6 +26,12 @@ private data class BuildingData(
     var timeLeft: Int = 0,
     var range: Double = 10.0,
     var hp: Int = 1,
+)
+
+private data class Animation(
+    var image: Image,
+    val imgList: List<Bitmap>,
+    var state: Int = 0,
 )
 
 private data class GridElement(
@@ -117,6 +124,7 @@ class GridManager(
             }
             BuildingType.Base -> {
                 building.image.scale *= 2
+                building.hp = 50
                 building.image.position((x - 1) * tileSize, (y - 1) * tileSize)
             }
             else -> {}
@@ -145,11 +153,29 @@ class GridManager(
         println("Shooting from $x,$y to ${target.x/tileSize},${target.y / tileSize}")
     }
 
-    private fun explode(){
+    private fun explode(x: Int, y: Int){
+        for (dx in -1..1){
+            for (dy in -1..1){
+                reveal(x + dx, y + dy)
+                val elem = gridElements[mineSweeper[x+dx,y+dy].id]
+                if (elem.building != null){
+                    elem.building?.image?.removeFromParent()
+                    gridElements[mineSweeper[x,y].id].building = null
+                    scene.onBuildingDestroyed(TileInfo(tile= mineSweeper[x,y], buildingType= elem.building?.type))
+                }
+                for (target in scene.unitManager.listEnemies()
+                    .filter { enemy -> 2 >= Point2.distanceSquared(x.toDouble(), y.toDouble(), enemy.x / tileSize, enemy.y / tileSize) }){
+                    scene.unitManager.damageEnemy(target.id, 999)
+                }
+                //val bitmap = gameResources.tiles.boom_anim[0]
+                //val anim = Animation(image = container.image(bitmap), imgList = gameResources.tiles.boom_anim)
 
+            }
+        }
     }
 
     private fun drilling(x : Int, y : Int, building : BuildingData){
+        if (mineSweeper[x,y].isBomb) explode(x,y)
         building.timeLeft--
         if (building.timeLeft > 0) return
         building.timeLeft = 0

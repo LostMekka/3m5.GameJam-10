@@ -35,6 +35,12 @@ suspend fun initializeGameResources() {
                 UnitType.RocketTank to img("sprites/UnitRedRocketTank.png"),
                 UnitType.Bomber to img("sprites/UnitRedBomber.png"),
             ),
+            boom_anim = listOf(
+                img("effects/boom_anim_1.png"),
+                img("effects/boom_anim_2.png"),
+                img("effects/boom_anim_3.png"),
+                img("effects/boom_anim_4.png"),
+            )
         ),
         GameResources.Images(
             glassPanel_cornerBR_Bitmap = img("ui/glassPanel_cornerBR.png"),
@@ -72,6 +78,7 @@ class GameResources(
         val numbers: List<Bitmap>,
         val buildings: Map<BuildingType, Bitmap>,
         val units: Map<UnitType, Bitmap>,
+        val boom_anim: List<Bitmap>
     )
 
     class Images(
