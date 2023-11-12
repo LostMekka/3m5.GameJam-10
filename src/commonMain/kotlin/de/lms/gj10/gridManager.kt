@@ -1,5 +1,12 @@
 package de.lms.gj10
 
+//TODO:
+// bugfix placeable everywhere
+// bases
+// bugfix shift
+// turrets
+
+
 import de.lms.gj10.minesweeper.*
 import korlibs.image.color.*
 import korlibs.korge.input.*

@@ -37,8 +37,24 @@ class GameplayScene : Scene() {
         if (buildingType == null) {
             changeMoney(tile.number.toLong())
         } else {
-            if (!tile.isRevealed && buildingType != BuildingType.Drill) return
+            // Building conditions:
             if (!gridManager.hasRevealedNeighbor(tile.x, tile.y)) return
+            if (buildingType == BuildingType.Drill && tile.isRevealed) return
+            if (buildingType != BuildingType.Drill && !tile.isRevealed) return
+            if (buildingType == BuildingType.Extractor && tile.number <= 0) return
+            when (buildingType){
+                BuildingType.Drill -> {
+                    if (tile.isRevealed) return
+                }
+                BuildingType.Extractor -> {
+                    if (!tile.isRevealed) return
+                    if (tile.number <= 0) return
+                }
+                else -> {
+                    if (!tile.isRevealed) return
+                }
+            }
+            // building cost and actual build call
             changeMoney(-buildingType.cost)
             gridManager.build(tile.x, tile.y, buildingType)
             if (!keys.shift) {
