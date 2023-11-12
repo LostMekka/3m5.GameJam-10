@@ -15,6 +15,8 @@ suspend fun initializeGameResources() {
         GameResources.Tiles(
             img("tiles/hidden.png"),
             img("icons/bomb.png"),
+            img("sprites/Nest.png"),
+            img("sprites/stone.png"),
             img("tiles/empty.png"),
             img("icons/question_mark.png"),
             (0..8).map { img("icons/$it.png") },
@@ -58,6 +60,8 @@ class GameResources(
     class Tiles(
         val hidden: Bitmap,
         val bomb: Bitmap,
+        val nest: Bitmap,
+        val stone: Bitmap,
         val empty: Bitmap,
         val unknown: Bitmap,
         val numbers: List<Bitmap>,
