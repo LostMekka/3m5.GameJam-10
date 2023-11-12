@@ -15,7 +15,7 @@ class UnitManager(
 ) {
     private var nextUnitId = 0
     private data class UnitEntry(
-        var image: Container,
+        var container: Container,
         var hp: Int,
         var speed: Float,
     )
@@ -51,8 +51,7 @@ class UnitManager(
             if (flowField.isTarget(xi, yi)) {
                 val success = gridManager.attack(xi, yi, 1)
                 if (success) {
-                    unitsById -= unitId
-                    container.removeFromParent()
+                    removeUnit(unitId)
                 }
             }
         }
@@ -61,7 +60,28 @@ class UnitManager(
             centerOn(container)
         }
     }
+
+    private fun removeUnit(id: Int) {
+        val unit = unitsById[id] ?: return
+        unitsById -= id
+        unit.container.removeFromParent()
+    }
+
+    fun listEnemies() = unitsById.map { (id, unit) -> Enemy(unit.container.x, unit.container.y, unit.hp, id) }
+
+    fun damageEnemy(enemyId: Int, damage: Int) {
+        val unit = unitsById[enemyId] ?: return
+        unit.hp -= damage
+        if (unit.hp <= 0) removeUnit(enemyId)
+    }
 }
+
+data class Enemy(
+    val x: Double,
+    val y: Double,
+    val hp: Int,
+    val id: Int,
+)
 
 private class FlowField(
     tileInfos: List<TileInfo>
