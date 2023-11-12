@@ -31,6 +31,10 @@ class GameplayScene : Scene() {
         addFixedUpdater(1.timesPerSecond) { addIncome() }
         addFixedUpdater(0.2.timesPerSecond) { unitManager.addUnit() }
 
+        addEscapeMenu()
+    }
+
+    private fun SContainer.addEscapeMenu() {
         var menuOpen = false
         fun openMenuWindow() {
             uiWindow("Menu", Size(windowWidth / 4, windowHeight / 4)) {
@@ -43,7 +47,7 @@ class GameplayScene : Scene() {
                     position(windowWidth / 16, windowWidth / 16)
                 }
 
-                this.onAttachDetach(onDetach = {
+                onAttachDetach(onDetach = {
                     menuOpen = false
                 })
             }.centerOnStage()
@@ -51,7 +55,7 @@ class GameplayScene : Scene() {
 
         keys {
             down(Key.ESCAPE) {
-                if (menuOpen == false) {
+                if (!menuOpen) {
                     openMenuWindow()
                     menuOpen = true
                 }
