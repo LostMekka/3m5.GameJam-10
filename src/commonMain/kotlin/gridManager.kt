@@ -1,5 +1,6 @@
 import de.lms.gj10.*
 import de.lms.gj10.minesweeper.*
+import korlibs.image.color.*
 import korlibs.korge.input.*
 import korlibs.korge.view.*
 
@@ -96,7 +97,18 @@ class GridManager(
             0 -> container.image(gameResources.tiles.hidden)
             1 -> container.image(gameResources.tiles.bomb)
             2 -> container.image(gameResources.tiles.empty)
-            in 3..10 -> container.image(gameResources.tiles.numbers[imageNum - 2])
+            in 3..10 -> container.image(gameResources.tiles.numbers[imageNum - 2]) {
+                when (imageNum) {
+                    3 -> colorMul = RGBA(0xFF, 0xF2, 0xE0, 0xFF) // #fff2e0
+                    4 -> colorMul = RGBA(0xFF, 0xD4, 0x99, 0xFF) // #ffd499
+                    5 -> colorMul = RGBA(0xFF, 0xBC, 0x60, 0xFF) //y #ffbc60
+                    6 -> colorMul = RGBA(0xFF, 0xAE, 0x40, 0xFF) //y #ffae40
+                    7 -> colorMul = RGBA(0xFF, 0xA6, 0x20, 0xFF) //y #ffa620
+                    8 -> colorMul = RGBA(0xFF, 0xA3, 0x10, 0xFF) //y #ffa310
+                    9 -> colorMul = RGBA(0xFF, 0xA1, 0x08, 0xFF) //y #ffa108
+                    10 -> colorMul = RGBA(0xFF, 0xA0, 0x04, 0xFF) //y #ffa004
+                }
+            }
             else -> container.image(gameResources.tiles.unknown)
         }
         img.position(x * tileScale * tileSize, y * tileScale * tileSize)
