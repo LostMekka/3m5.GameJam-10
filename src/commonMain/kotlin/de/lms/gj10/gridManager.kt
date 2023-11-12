@@ -135,9 +135,15 @@ class GridManager(
         val building = gridElements[mineSweeper[x,y].id].building ?: return false
         building.hp -= damage
         if (building.hp <= 0) {
+            // play sound - building destory
+            scene.playSound(gameResources.audio.sfxBuildingBoom)
+
             building.image.removeFromParent()
             gridElements[mineSweeper[x,y].id].building = null
             scene.onBuildingDestroyed(TileInfo(tile= mineSweeper[x,y], buildingType= building.type))
+        } else {
+            // play sound - building dmg
+            scene.playSound(gameResources.audio.sfxBuildingTakingDmg)
         }
         return true
     }

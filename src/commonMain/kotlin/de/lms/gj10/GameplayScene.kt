@@ -1,5 +1,6 @@
 package de.lms.gj10
 
+import korlibs.audio.sound.*
 import korlibs.event.*
 import korlibs.io.async.*
 import korlibs.korge.component.*
@@ -24,7 +25,7 @@ class GameplayScene : Scene() {
         gridManager = GridManager(this, this@GameplayScene)
         gridManager.initializeGrid()
 
-        unitManager = UnitManager(this, gridManager)
+        unitManager = UnitManager(this, gridManager, this@GameplayScene)
 
         ui = GameUi(this, this@GameplayScene::onButtonClicked)
 
@@ -32,6 +33,13 @@ class GameplayScene : Scene() {
         addFixedUpdater(0.2.timesPerSecond) { unitManager.addUnit() }
 
         addEscapeMenu()
+    }
+
+    fun playSound(sound: Sound, volume: Double = sfxVolume) {
+        launchImmediately {
+            sound.volume = volume
+            sound.play()
+        }
     }
 
     private fun SContainer.addEscapeMenu() {
@@ -80,7 +88,12 @@ class GameplayScene : Scene() {
         println("tile at (${tile.x}, ${tile.y}) clicked")
         if (building != null) return
         if (buildingType == null) {
-            changeMoney(tile.number.toLong())
+            if (tile.number > 0) {
+                // play sound - money pling
+                val sound = gameResources.audio.sfxClickMoneyTile
+                playSound(sound)
+                changeMoney(tile.number.toLong())
+            }
         } else {
             if (!hasEnoughMoney(buildingType.cost)) return
             // Building conditions:
@@ -104,7 +117,16 @@ class GameplayScene : Scene() {
             }
             // build call
             changeMoney(-buildingType.cost)
+
             gridManager.build(tile.x, tile.y, buildingType)
+            // play sound - building build
+            playSound(gameResources.audio.sfxBuildingBuild)
+
+            if (buildingType == BuildingType.Drill) {
+                // play sound - drill sound if it is drill
+                playSound(gameResources.audio.sfxBuildingDrill)
+            }
+
             unitManager.updateFlowField()
             if (!input.keys.pressing(Key.SHIFT)) {
                 currBuildingType = null
@@ -147,6 +169,14 @@ class GameplayScene : Scene() {
 
     fun onBuildingDestroyed(tileInfo: TileInfo) {
         unitManager.updateFlowField()
+
+        if (tileInfo.buildingType == BuildingType.Base) {
+            playSound(gameResources.audio.sfxLose)
+        }
+
+        if (tileInfo.buildingType == BuildingType.Nest) {
+            playSound(gameResources.audio.sfxWin)
+        }
     }
 
     private fun hasEnoughMoney(cost: Long): Boolean {

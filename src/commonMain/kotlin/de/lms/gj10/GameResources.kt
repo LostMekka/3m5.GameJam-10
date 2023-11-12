@@ -51,6 +51,19 @@ suspend fun initializeGameResources() {
             sfxBtnSelect = resourcesVfs["sfx/sfx_btn_select.wav"].readSound(),
             sfxBtnDeselect = resourcesVfs["sfx/sfx_btn_deselect.wav"].readSound(),
             sfxBtnSelectInvalid = resourcesVfs["sfx/sfx_btn_select_invalid.wav"].readSound(),
+
+            sfxAlienDeathscream = resourcesVfs["sfx/sfx_alien_deathscream.wav"].readSound(),
+            sfxBombBoom = resourcesVfs["sfx/sfx_bomb_boom.wav"].readSound(),
+            sfxBtnStart = resourcesVfs["sfx/sfx_btn_start.wav"].readSound(),
+            sfxBuildingBoom = resourcesVfs["sfx/sfx_building_boom.wav"].readSound(),
+            sfxBuildingBuild = resourcesVfs["sfx/sfx_building_build.wav"].readSound(),
+            sfxBuildingDrill = resourcesVfs["sfx/sfx_building_drill.wav"].readSound(),
+            sfxBuildingTakingDmg = resourcesVfs["sfx/sfx_building_taking-dmg.wav"].readSound(),
+            sfxBuildingTurretPew = resourcesVfs["sfx/sfx_building_turret_pew.wav"].readSound(),
+            sfxClickMoneyTile = resourcesVfs["sfx/sfx_click_money_tile.wav"].readSound(),
+            sfxWin = resourcesVfs["sfx/sfx_win.wav"].readSound(),
+            sfxLose = resourcesVfs["sfx/sfx_lose.wav"].readSound(),
+            sfxLose2 = resourcesVfs["sfx/sfx_lose2.wav"].readSound(),
         ),
     )
 }
@@ -91,5 +104,18 @@ class GameResources(
         val sfxBtnSelect: Sound,
         val sfxBtnDeselect: Sound,
         val sfxBtnSelectInvalid: Sound,
+
+        val sfxAlienDeathscream: Sound,
+        val sfxBombBoom: Sound,
+        val sfxBtnStart: Sound,
+        val sfxBuildingBoom: Sound,
+        val sfxBuildingBuild: Sound,
+        val sfxBuildingDrill: Sound,
+        val sfxBuildingTakingDmg: Sound,
+        val sfxBuildingTurretPew: Sound,
+        val sfxClickMoneyTile: Sound,
+        val sfxWin: Sound,
+        val sfxLose: Sound,
+        val sfxLose2: Sound,
     )
 }
