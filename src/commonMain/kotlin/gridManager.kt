@@ -92,7 +92,7 @@ class GridManager(
         building.image.position(x * tileScale * tileSize, y * tileScale * tileSize)
         building.image.scale = tileScale
         if (building.type == BuildingType.Excavator){
-            building.timeLeft = 10
+            building.timeLeft = 5
             building.image.addFixedUpdater(1.timesPerSecond) { excavate(x,y,building) }
         }
     }
