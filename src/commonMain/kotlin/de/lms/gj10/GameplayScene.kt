@@ -21,7 +21,7 @@ class GameplayScene : Scene() {
     override suspend fun SContainer.sceneMain() {
         initializeGameResources() // must be the first thing here!
 
-        gridManager = GridManager(this, input, this@GameplayScene::onTileClicked)
+        gridManager = GridManager(this, this@GameplayScene::onTileClicked, this@GameplayScene::onBuildingDestroyed)
         gridManager.initializeGrid()
 
         unitManager = UnitManager(this, gridManager)
@@ -117,6 +117,10 @@ class GameplayScene : Scene() {
                 buildingType
             } else null
         }
+    }
+
+    private fun onBuildingDestroyed(tileInfo: TileInfo){
+
     }
 
     private fun hasEnoughMoney(cost: Long):  Boolean{

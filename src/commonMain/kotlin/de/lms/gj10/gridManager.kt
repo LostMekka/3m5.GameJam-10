@@ -45,8 +45,8 @@ private val Tile.imageNum : Int get() {
 
 class GridManager(
     private val container: SContainer,
-    private val input: Input,
     private val onTileClick: (TileInfo, MouseButton) -> Unit,
+    private val onBuildingDestroy: (TileInfo) -> Unit,
 ) {
 
     private val gridElements = mutableListOf<GridElement>()
@@ -116,6 +116,7 @@ class GridManager(
         if (building.hp <= 0) {
             building.image.removeFromParent()
             gridElements[mineSweeper[x,y].id].building = null
+            onBuildingDestroy(TileInfo(tile= mineSweeper[x,y], buildingType= building.type))
         }
         return true
     }
