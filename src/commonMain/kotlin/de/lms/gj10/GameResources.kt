@@ -20,7 +20,6 @@ suspend fun initializeGameResources() {
             (0..8).map { img("icons/$it.png") },
             mapOf(
                 BuildingType.Base to img("sprites/BuildingRedBase.png"),
-                BuildingType.Factory to img("sprites/BuildingRedFactory.png"),
                 BuildingType.Extractor to img("sprites/BuildingRedExtractor.png"),
                 BuildingType.Drill to img("sprites/BuildingRedExcavator.png"),
                 BuildingType.Refinery to img("sprites/BuildingRedRefinery.png"),
