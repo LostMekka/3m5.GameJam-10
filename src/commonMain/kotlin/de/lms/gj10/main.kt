@@ -1,4 +1,7 @@
-import de.lms.gj10.*
+package de.lms.gj10
+
+import GridManager
+import TileInfo
 import korlibs.korge.*
 import korlibs.korge.scene.*
 import korlibs.korge.view.*
@@ -6,23 +9,10 @@ import korlibs.image.color.*
 import korlibs.math.geom.*
 import korlibs.time.*
 
-const val windowWidth = 1024
-const val windowHeight = 768
-
 suspend fun main() = Korge(windowSize = Size(windowWidth, windowHeight), backgroundColor = Colors["#2b2b2b"]) {
     val sceneContainer = sceneContainer()
     sceneContainer.changeTo { MyScene() }
 }
-
-data class BuildingStats(
-    val cost: Long,
-    val threatLevel: Long,
-)
-val buildingCosts = mapOf(
-    BuildingType.Excavator to BuildingStats(25L, 1L),
-    BuildingType.Extractor to BuildingStats(25L, 1L),
-    BuildingType.Turret to BuildingStats(25L, 1L),
-)
 
 class MyScene : Scene() {
     private lateinit var gridManager: GridManager
@@ -60,7 +50,7 @@ class MyScene : Scene() {
         if (buildingType == null) {
             changeMoney(tile.number.toLong())
         } else {
-            changeMoney(buildingCosts.getValue(buildingType).cost)
+            changeMoney(buildingType.cost)
             gridManager.build(tile.x, tile.y, buildingType)
             if (!keys.shift) {
                 currBuildingType = null
@@ -84,10 +74,7 @@ class MyScene : Scene() {
             ui.onBuildingTypeChange(null)
             null
         } else {
-            val cost = buildingCosts[buildingType]
-                ?.cost
-                ?: 1L.also { println("WARNING: no cost for building $buildingType configured") }
-            if (money < cost) {
+            if (money < buildingType.cost) {
                 ui.onNotEnoughMoney()
                 null
             } else {
