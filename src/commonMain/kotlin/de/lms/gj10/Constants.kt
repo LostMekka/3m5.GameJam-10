@@ -5,6 +5,9 @@ const val windowHeight = 768
 const val gridWidth = 32
 const val gridHeight = 32
 const val tileSize = 24.0
+const val sfxVolume = .4
+const val sfxLoudVolume = .1
+const val musicVolume = .4
 
 enum class BuildingType(
     val cost: Long,

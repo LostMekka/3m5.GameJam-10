@@ -117,16 +117,19 @@ class GameplayScene : Scene() {
         println("button $buildingType clicked")
 
         launchImmediately {
-            if (money > buildingType.cost) {
+            if (money >= buildingType.cost) {
                 if (currBuildingType == buildingType) {
                     val sound = gameResources.audio.sfxBtnDeselect
+                    sound.volume = sfxLoudVolume
                     sound.play()
                 } else {
                     val sound = gameResources.audio.sfxBtnSelect
+                    sound.volume = sfxLoudVolume
                     sound.play()
                 }
             } else {
                 val sound = gameResources.audio.sfxBtnSelectInvalid
+                sound.volume = sfxVolume
                 sound.play()
             }
         }
