@@ -1,5 +1,6 @@
 package de.lms.gj10
 
+import korlibs.audio.sound.*
 import korlibs.image.bitmap.*
 import korlibs.image.format.*
 import korlibs.io.file.std.*
@@ -39,7 +40,12 @@ suspend fun initializeGameResources() {
             glassPanel_cornerBR_Bitmap = img("ui/glassPanel_cornerBR.png"),
             btnSelectedIcon = img("ui/selectIcon.png"),
             hotkeyBtnBitmapMap = imgMapFromAToZ(),
-        )
+        ),
+        GameResources.Audio(
+            sfxBtnSelect = resourcesVfs["sfx/sfx_btn_select.wav"].readSound(),
+            sfxBtnDeselect = resourcesVfs["sfx/sfx_btn_deselect.wav"].readSound(),
+            sfxBtnSelectInvalid = resourcesVfs["sfx/sfx_btn_select_invalid.wav"].readSound(),
+        ),
     )
 }
 
@@ -54,6 +60,7 @@ private suspend fun imgMapFromAToZ(): Map<Char, Bitmap> {
 class GameResources(
     val tiles: Tiles,
     val images: Images,
+    val audio: Audio,
 ) {
     class Tiles(
         val hidden: Bitmap,
@@ -71,5 +78,11 @@ class GameResources(
         val glassPanel_cornerBR_Bitmap: Bitmap,
         val btnSelectedIcon: Bitmap,
         val hotkeyBtnBitmapMap: Map<Char, Bitmap>,
+    )
+
+    class Audio(
+        val sfxBtnSelect: Sound,
+        val sfxBtnDeselect: Sound,
+        val sfxBtnSelectInvalid: Sound,
     )
 }
