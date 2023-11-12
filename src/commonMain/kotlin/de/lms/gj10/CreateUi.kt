@@ -70,7 +70,7 @@ class GameUi(
     }
 
     fun onBuildingTypeChange(buildingType: BuildingType?) {
-        updateBtnActive(buildingType == BuildingType.Excavator, btnBuildingExcavator, BuildingType.Excavator)
+        updateBtnActive(buildingType == BuildingType.Drill, btnBuildingExcavator, BuildingType.Drill)
         updateBtnActive(buildingType == BuildingType.Extractor, btnBuildingExtractor, BuildingType.Extractor)
         updateBtnActive(buildingType == BuildingType.Turret, btnBuildingTurret, BuildingType.Turret)
     }
@@ -107,10 +107,10 @@ class GameUi(
         textScore.position(textPosX, (defaultSpacing * 2) + textHeight)
 
         btnBuildingExcavator = container.generateButton(
-            mainImg = gameResources.tiles.buildings.getValue(BuildingType.Excavator),
-            type = BuildingType.Excavator,
+            mainImg = gameResources.tiles.buildings.getValue(BuildingType.Drill),
+            type = BuildingType.Drill,
             hotKey = 'e',
-            cost = BuildingType.Excavator.cost,
+            cost = BuildingType.Drill.cost,
         )
         btnBuildingExtractor = container.generateButton(
             mainImg = gameResources.tiles.buildings.getValue(BuildingType.Extractor),

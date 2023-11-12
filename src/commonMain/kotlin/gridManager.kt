@@ -83,13 +83,13 @@ class GridManager(
         gridElements[tile.id].building = building
         building.image.position(x * tileScale * tileSize, y * tileScale * tileSize)
         building.image.scale = tileScale
-        if (building.type == BuildingType.Excavator){
+        if (building.type == BuildingType.Drill){
             building.timeLeft = 5
-            building.image.addFixedUpdater(1.timesPerSecond) { excavate(x,y,building) }
+            building.image.addFixedUpdater(1.timesPerSecond) { drilling(x,y,building) }
         }
     }
 
-    private fun excavate(x : Int, y : Int, building : BuildingData){
+    private fun drilling(x : Int, y : Int, building : BuildingData){
         building.timeLeft--
         if (building.timeLeft > 0) return
         building.timeLeft = 0

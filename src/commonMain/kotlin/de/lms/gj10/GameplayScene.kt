@@ -39,7 +39,7 @@ class GameplayScene : Scene() {
         if (buildingType == null) {
             changeMoney(tile.number.toLong())
         } else {
-            if (!tile.isRevealed && buildingType != BuildingType.Excavator) return
+            if (!tile.isRevealed && buildingType != BuildingType.Drill) return
             if (!gridManager.hasRevealedNeighbor(tile.x, tile.y)) return
             changeMoney(-buildingType.cost)
             gridManager.build(tile.x, tile.y, buildingType)
@@ -56,7 +56,7 @@ class GameplayScene : Scene() {
             BuildingType.Base -> BuildingType.Base
             BuildingType.Factory -> BuildingType.Factory
             BuildingType.Extractor -> BuildingType.Extractor
-            BuildingType.Excavator -> BuildingType.Excavator
+            BuildingType.Drill -> BuildingType.Drill
             BuildingType.Turret -> BuildingType.Turret
             BuildingType.Turret2 -> BuildingType.Turret2
             BuildingType.Refinery -> BuildingType.Refinery

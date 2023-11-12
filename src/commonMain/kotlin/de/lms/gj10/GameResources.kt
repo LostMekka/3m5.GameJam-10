@@ -22,7 +22,7 @@ suspend fun initializeGameResources() {
                 BuildingType.Base to img("sprites/BuildingRedBase.png"),
                 BuildingType.Factory to img("sprites/BuildingRedFactory.png"),
                 BuildingType.Extractor to img("sprites/BuildingRedExtractor.png"),
-                BuildingType.Excavator to img("sprites/BuildingRedExcavator.png"),
+                BuildingType.Drill to img("sprites/BuildingRedExcavator.png"),
                 BuildingType.Refinery to img("sprites/BuildingRedRefinery.png"),
                 BuildingType.Turret to img("sprites/BuildingRedTurret.png"),
                 BuildingType.Turret2 to img("sprites/BuildingRedTurret2.png"),

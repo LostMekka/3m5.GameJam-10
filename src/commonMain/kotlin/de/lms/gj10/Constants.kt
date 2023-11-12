@@ -14,7 +14,7 @@ enum class BuildingType(
     Base(25L, 1L),
     Factory(25L, 1L),
     Extractor(25L, 1L),
-    Excavator(25L, 1L),
+    Drill(25L, 1L),
     Turret(25L, 1L),
     Turret2(25L, 1L),
     Refinery(25L, 1L),
