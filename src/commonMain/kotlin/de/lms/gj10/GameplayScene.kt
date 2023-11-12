@@ -60,7 +60,6 @@ class GameplayScene : Scene() {
     }
 
 
-
     private fun addIncome() {
         val income = gridManager.totalExtractorIncome
         changeMoney(income.toLong())
@@ -85,14 +84,16 @@ class GameplayScene : Scene() {
             if (buildingType == BuildingType.Drill && tile.isRevealed) return
             if (buildingType != BuildingType.Drill && !tile.isRevealed) return
             if (buildingType == BuildingType.Extractor && tile.number <= 0) return
-            when (buildingType){
+            when (buildingType) {
                 BuildingType.Drill -> {
                     if (tile.isRevealed) return
                 }
+
                 BuildingType.Extractor -> {
                     if (!tile.isRevealed) return
                     if (tile.number <= 0) return
                 }
+
                 else -> {
                     if (!tile.isRevealed) return
                 }
@@ -114,18 +115,18 @@ class GameplayScene : Scene() {
             ui.onBuildingTypeChange(null)
             null
         } else {
-            if (hasEnoughMoney(buildingType.cost)){
+            if (hasEnoughMoney(buildingType.cost)) {
                 ui.onBuildingTypeChange(buildingType)
                 buildingType
             } else null
         }
     }
 
-    private fun onBuildingDestroyed(tileInfo: TileInfo){
-
+    private fun onBuildingDestroyed(tileInfo: TileInfo) {
+        unitManager.updateFlowField()
     }
 
-    private fun hasEnoughMoney(cost: Long):  Boolean{
+    private fun hasEnoughMoney(cost: Long): Boolean {
         if (money >= cost) return true
         ui.onNotEnoughMoney()
         return false
