@@ -1,7 +1,6 @@
 package de.lms.gj10
 
 //TODO:
-// bugfix placeable everywhere
 // bases
 // bugfix shift
 // turrets
@@ -89,8 +88,8 @@ class GridManager(
         val building = BuildingData(container.image(bitmap), buildingType)
         val tile = mineSweeper[x, y]
         gridElements[tile.id].building = building
-        building.image.position(x * tileScale * tileSize, y * tileScale * tileSize)
-        building.image.scale = tileScale
+        building.image.position(x * tileSize, y * tileSize)
+        building.image.scale = tileSize / building.image.size.width
         if (building.type == BuildingType.Drill){
             building.timeLeft = 5
             building.image.addFixedUpdater(1.timesPerSecond) { drilling(x,y,building) }
@@ -124,8 +123,8 @@ class GridManager(
             }
             else -> container.image(gameResources.tiles.unknown)
         }
-        img.position(x * tileScale * tileSize, y * tileScale * tileSize)
-        img.scale = tileScale
+        img.position(x * tileSize, y * tileSize)
+        img.scale = tileSize / img.size.width
         img.onClick { clickPreProcessing(x, y) }
         return img
     }

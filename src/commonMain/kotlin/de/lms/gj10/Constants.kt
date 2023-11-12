@@ -4,8 +4,7 @@ const val windowWidth = 1024
 const val windowHeight = 768
 const val gridWidth = 32
 const val gridHeight = 32
-const val tileSize = 16
-const val tileScale = 1.5
+const val tileSize = 24
 
 enum class BuildingType(
     val cost: Long,
