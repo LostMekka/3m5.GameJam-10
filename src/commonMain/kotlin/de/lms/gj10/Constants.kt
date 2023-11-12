@@ -10,7 +10,8 @@ enum class BuildingType(
     val cost: Long,
     val threatLevel: Long,
 ) {
-    Base(25L, 1L),
+    Base(0L, 1L),
+    Nest(0L, 0L),
     Extractor(25L, 1L),
     Drill(25L, 1L),
     Turret(25L, 1L),

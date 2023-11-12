@@ -70,7 +70,7 @@ class GridManager(
             }
         }
         build(gridWidth-1,gridHeight-1, BuildingType.Base)
-        build(0,0, BuildingType.Base)
+        build(0,0, BuildingType.Nest)
         gridElements.sortBy { it.id }
     }
 
