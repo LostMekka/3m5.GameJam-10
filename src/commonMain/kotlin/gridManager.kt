@@ -6,13 +6,13 @@ import korlibs.korge.view.*
 import korlibs.time.*
 
 
-data class BuildingData(
+private data class BuildingData(
     var image : Image,
     var type: BuildingType,
     var timeLeft: Int = 0,
 )
 
-data class GridElement(
+private data class GridElement(
     var image : Image,
     var x : Int,
     var y : Int,
@@ -26,7 +26,7 @@ data class TileInfo(
     val buildingType : BuildingType? = null,
 )
 
-val Tile.imageNum : Int get() {
+private val Tile.imageNum : Int get() {
     if (!isRevealed) return 0
     if (isBomb) return 1
     return number + 2
@@ -36,6 +36,7 @@ class GridManager(
     private val container : SContainer,
     private val onTileClick : (TileInfo) -> Unit,
 ) {
+
     private val gridElements = mutableListOf<GridElement>()
     private val mineSweeper = generateSolvableMinesweeperGrid(gridWidth, gridHeight, 150)
     val totalExtractorIncome : Int get(){
@@ -44,6 +45,15 @@ class GridManager(
             .sumOf { mineSweeper[it.x, it.y].number }
     }
     val gridInfo : List<TileInfo> get() = mineSweeper.map { TileInfo(it, gridElements[it.id].building?.type) }
+    fun hasRevealedNeighbor(x : Int , y : Int) : Boolean {
+        for (dx in -1..1) {
+            for (dy in -1..1) {
+                if (x+dx < 0 || x+dy < 0 || x+dx >= gridWidth || y+dy >= gridHeight || (dx+dy)%2 == 0) continue
+                if (mineSweeper[dx + x, dy + y].isRevealed) return true
+            }
+        }
+        return false
+    }
     fun initializeGrid() = container.apply {
         for (x in 0 until mineSweeper.width) {
             for (y in 0 until mineSweeper.height) {

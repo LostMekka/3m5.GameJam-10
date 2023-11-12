@@ -36,13 +36,12 @@ class GameplayScene : Scene() {
         val (tile, building) = tileInfo
         println("tile at (${tile.x}, ${tile.y}) clicked")
         if (building != null) return
-        if (!tile.isRevealed && buildingType != BuildingType.Excavator) return
-        //if (tile.isBomb) return
-        //if (tile.number <= 0) return
         if (buildingType == null) {
             changeMoney(tile.number.toLong())
         } else {
-            changeMoney(buildingType.cost)
+            if (!tile.isRevealed && buildingType != BuildingType.Excavator) return
+            if (!gridManager.hasRevealedNeighbor(tile.x, tile.y)) return
+            changeMoney(-buildingType.cost)
             gridManager.build(tile.x, tile.y, buildingType)
             if (!keys.shift) {
                 currBuildingType = null
