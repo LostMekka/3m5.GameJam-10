@@ -95,19 +95,20 @@ class Grid(
         }
     }
 
-    fun autoRevealStartingArea(x: Int, y: Int) = autoRevealStartingArea(this[x, y])
-    fun autoRevealStartingArea(startingTile: Tile) {
-        reveal(startingTile)
-        if (startingTile.number != 0) return
-        val zeroes = mutableListOf(startingTile)
+    fun autoReveal(x: Int, y: Int) = autoReveal(this[x, y])
+    fun autoReveal(startingTile: Tile): List<Tile> {
+        val changedTiles = mutableListOf(reveal(startingTile))
+        if (startingTile.number != 0) return changedTiles
+        val zeroes = mutableListOf(changedTiles.first())
         while (zeroes.isNotEmpty()) {
             val tile = zeroes.removeFirst()
             for (n in neighboursOf(tile)) {
                 if (n.isRevealed) continue
-                reveal(n)
+                changedTiles += reveal(n)
                 if (n.number == 0) zeroes += n
             }
         }
+        return changedTiles
     }
 
     private fun idOf(x: Int, y: Int) = x + y * width
@@ -142,7 +143,7 @@ class Grid(
         private fun Grid.revealStartingArea() {
             // TODO: handle case where there are no zero tiles
             val firstZeroTile = filter { it.number == 0 }.random()
-            autoRevealStartingArea(firstZeroTile)
+            autoReveal(firstZeroTile)
         }
 
         fun parse(input: String): Grid {
