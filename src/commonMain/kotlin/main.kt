@@ -50,10 +50,10 @@ class MyScene : Scene() {
             UiBtnType.BuildFactory -> BuildingType.Factory
         }
         currBuildingType = if (currBuildingType == buildingType) {
-            ui.onBtnTypeChange(null)
+            ui.onBuildingTypeChange(null)
             null
         } else {
-            ui.onBtnTypeChange(type)
+            ui.onBuildingTypeChange(type)
             buildingType
         }
     }

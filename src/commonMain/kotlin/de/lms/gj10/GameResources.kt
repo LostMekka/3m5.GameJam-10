@@ -1,6 +1,7 @@
 package de.lms.gj10
 
 import BuildingType
+import UnitType
 import korlibs.image.bitmap.*
 import korlibs.image.format.*
 import korlibs.io.file.std.*
@@ -17,17 +18,38 @@ suspend fun initializeGameResources() {
             img("tiles/empty.png"),
             img("icons/question_mark.png"),
             (0..8).map { img("icons/$it.png") },
-            mapOf(BuildingType.Factory to img("sprites/factory_red.png")),
+            mapOf(
+                BuildingType.Base to img("sprites/BuildingRedBase.png"),
+                BuildingType.Factory to img("sprites/BuildingRedFactory.png"),
+                BuildingType.Extractor to img("sprites/BuildingRedExtractor.png"),
+                BuildingType.Excavator to img("sprites/BuildingRedExcavator.png"),
+                BuildingType.Refinery to img("sprites/BuildingRedRefinery.png"),
+                BuildingType.Turret to img("sprites/BuildingRedTurret.png"),
+                BuildingType.Turret2 to img("sprites/BuildingRedTurret2.png"),
+            ),
+            mapOf(
+                UnitType.Soldier to img("sprites/UnitRedSoldier.png"),
+                UnitType.Grenadier to img("sprites/UnitRedGrenadier.png"),
+                UnitType.Tank to img("sprites/UnitRedTank.png"),
+                UnitType.RocketTank to img("sprites/UnitRedRocketTank.png"),
+                UnitType.Bomber to img("sprites/UnitRedBomber.png"),
+            ),
         ),
         GameResources.Images(
             img("ui/glassPanel_cornerBR.png"),
-            img("ui/k.png"),
-            img("sprites/factory_red.png"),
+            img("ui/selectIcon.png"),
+            imgMapFromAToZ(),
         )
     )
 }
 
 private suspend fun img(path: String) = resourcesVfs[path].readBitmap()
+
+private suspend fun imgMapFromAToZ(): Map<Char, Bitmap> {
+    return ('a'..'z').associateWith { char ->
+        img("ui/$char.png")
+    }
+}
 
 class GameResources(
     val tiles: Tiles,
@@ -40,10 +62,12 @@ class GameResources(
         val unknown: Bitmap,
         val numbers: List<Bitmap>,
         val buildings: Map<BuildingType, Bitmap>,
+        val units: Map<UnitType, Bitmap>,
     )
+
     class Images(
         val glassPanel_cornerBR_Bitmap: Bitmap,
-        val hotkeyBitmap: Bitmap,
-        val iconBitmap: Bitmap,
+        val btnSelectedIcon: Bitmap,
+        val hotkeyBtnBitmapMap: Map<Char, Bitmap>,
     )
 }

@@ -5,8 +5,23 @@ import korlibs.korge.view.*
 
 
 enum class BuildingType {
+    Base,
     Factory,
+    Extractor,
+    Excavator,
+    Turret,
+    Turret2,
+    Refinery,
 }
+
+enum class UnitType {
+    Soldier,
+    Grenadier,
+    Tank,
+    RocketTank,
+    Bomber,
+}
+
 data class GridElement(
     var image : Image,
     var buildImg : Image?,
