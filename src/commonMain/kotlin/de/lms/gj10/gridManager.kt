@@ -121,7 +121,9 @@ class GridManager(
         return true
     }
 
-    fun shoot()
+    fun shoot(){
+
+    }
 
     private fun drilling(x : Int, y : Int, building : BuildingData){
         building.timeLeft--
