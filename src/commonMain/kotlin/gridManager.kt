@@ -53,14 +53,10 @@ class GridManager(
 ) {
     private val gridElements = mutableListOf<GridElement>()
     private val mineSweeper = generateSolvableMinesweeperGrid(32, 32, 100)
-    val totalFactoryIncome : Int get(){
-        var income = 0
-        val factories = gridElements.filter { it.building?.type == BuildingType.Factory }
-        for (i in 0 until factories.size){
-            val factoryTile = mineSweeper[factories[i].x, factories[i].y]
-            income += factoryTile.number
-        }
-        return income
+    val totalExtractorIncome : Int get(){
+        return gridElements
+            .filter { it.building?.type == BuildingType.Extractor }
+            .sumOf { mineSweeper[it.x, it.y].number }
     }
     fun initializeGrid() = container.apply {
         for (x in 0 until mineSweeper.width) {
@@ -75,11 +71,13 @@ class GridManager(
 
     fun reveal(x : Int, y : Int) {
         val oldTile = mineSweeper[x,y]
-        val gridElement = gridElements[oldTile.id]
-        val newTile = mineSweeper.reveal(oldTile)
-        gridElement.image.removeFromParent()
-        gridElement.imageNum = newTile.imageNum
-        gridElement.image = tileImg(x,y,gridElement.imageNum)
+        val revealedTiles = mineSweeper.autoReveal(oldTile)
+        for (i in 0 until revealedTiles.size) {
+            var gridElement = gridElements[revealedTiles[i].id]
+            gridElement.image.removeFromParent()
+            gridElement.imageNum = revealedTiles[i].imageNum
+            gridElement.image = tileImg(x, y, gridElement.imageNum)
+        }
     }
 
     fun build(x: Int, y : Int, buildingType : BuildingType){
@@ -110,8 +108,6 @@ class GridManager(
         onTileClick(TileInfo(tile, gridElement.building?.type))
     }
 }
-
-
 
 const val tileSize = 16
 const val tileScale : Double = 1.5
