@@ -48,7 +48,7 @@ class GameUi(
             RichTextData.Style.DEFAULT.copy(font = DefaultTtfFontAsBitmap)
         )
     }
-    private fun getCostText(newCost: Int): RichTextData {
+    private fun getCostText(newCost: Long): RichTextData {
         return RichTextData.fromHTML(
             "<font color=white><b>$newCost</b></font>",
             RichTextData.Style.DEFAULT.copy(font = DefaultTtfFontAsBitmap)
@@ -67,7 +67,7 @@ class GameUi(
         updateBtnActive(buildingType == BuildingType.Extractor, btnBuildingExtractor)
         updateBtnActive(buildingType == BuildingType.Turret, btnBuildingTurret)
     }
-    fun onBuildingCostChange(buildingType: BuildingType, newCost: Int) {
+    fun onBuildingCostChange(buildingType: BuildingType, newCost: Long) {
         // Retrieve the cost TextBlock associated with the buildingType
         val costTextBlock = costTextBlocks[buildingType]
 
@@ -122,6 +122,7 @@ class GameUi(
     // UI SOUNDS
     // BG Music (MACHT STEFKA)
     // Build MUSIC
+    // Build SFX
     // SHOOT SFX
 
     private fun SContainer.generateButton(
@@ -133,7 +134,7 @@ class GameUi(
         mainImg: Bitmap,
         hotKey: Char? = null,
         type: BuildingType,
-        cost: Int,
+        cost: Long,
     ): UIButton {
         val validHotKey = hotKey?.takeIf { it in 'a'..'z' }
 
