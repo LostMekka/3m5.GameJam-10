@@ -1,9 +1,9 @@
 import de.lms.gj10.*
 import de.lms.gj10.minesweeper.*
-import korlibs.datastructure.*
 import korlibs.image.color.*
 import korlibs.korge.input.*
 import korlibs.korge.view.*
+import korlibs.time.*
 
 
 enum class BuildingType {
@@ -90,6 +90,12 @@ class GridManager(
         gridElements[tile.id].building = building
         building.image.position(x * tileScale * tileSize, y * tileScale * tileSize)
         building.image.scale = tileScale
+        if (building.type == BuildingType.Excavator) building.image.addFixedUpdater(0.1.timesPerSecond) { excavate(x,y) }
+    }
+
+    private fun excavate(x : Int, y : Int){
+        gridElements[mineSweeper[x,y].id].building?.image?.removeFromParent()
+        reveal(x,y)
     }
 
     private fun tileImg(x : Int,y : Int, imageNum: Int) : Image {
