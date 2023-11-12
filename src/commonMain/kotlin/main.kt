@@ -4,6 +4,8 @@ import korlibs.korge.scene.*
 import korlibs.korge.view.*
 import korlibs.image.color.*
 import korlibs.math.geom.*
+import korlibs.time.*
+
 const val windowWidth = 1024
 const val windowHeight = 768
 
@@ -11,6 +13,10 @@ suspend fun main() = Korge(windowSize = Size(windowWidth, windowHeight), backgro
     val sceneContainer = sceneContainer()
     sceneContainer.changeTo { MyScene() }
 }
+
+private val buildingCosts = mapOf(
+    BuildingType.Factory to 25,
+)
 
 class MyScene : Scene() {
     private lateinit var gridManager: GridManager
@@ -25,13 +31,24 @@ class MyScene : Scene() {
         gridManager.initializeGrid()
 
         ui = GameUi(this, this@MyScene::onButtonClicked)
+
+        addFixedUpdater(1.timesPerSecond) { addIncome() }
+    }
+
+    private fun addIncome() {
+        val income = gridManager.totalFactoryIncome
+        changeMoney(income.toLong())
     }
 
     private fun onTileClicked(tileInfo: TileInfo) {
         val (tile, building) = tileInfo
         println("tile at (${tile.x}, ${tile.y}) clicked")
         if (building != null) return
-        if (!tile.isRevealed) return
+        if (!tile.isRevealed) {
+            // TODO: dont reveal tiles that easily. need to build something on top first or smth
+            gridManager.reveal(tile.x, tile.y)
+            return
+        }
         if (tile.isBomb) return
         if (tile.number <= 0) return
         val buildingType = currBuildingType
@@ -53,8 +70,14 @@ class MyScene : Scene() {
             ui.onBuildingTypeChange(null)
             null
         } else {
-            ui.onBuildingTypeChange(type)
-            buildingType
+            val cost = buildingCosts[buildingType] ?: 10.also { println("WARNING: no cost for building $buildingType configured") }
+            if (money < cost) {
+                ui.onNotEnoughMoney()
+                null
+            } else {
+                ui.onBuildingTypeChange(type)
+                buildingType
+            }
         }
     }
 
