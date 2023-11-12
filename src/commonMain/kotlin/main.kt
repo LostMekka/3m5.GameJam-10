@@ -36,7 +36,7 @@ class MyScene : Scene() {
     }
 
     private fun addIncome() {
-        val income = gridManager.totalFactoryIncome
+        val income = gridManager.totalExtractorIncome
         changeMoney(income.toLong())
     }
 
