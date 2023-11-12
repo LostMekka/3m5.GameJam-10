@@ -1,5 +1,6 @@
 import de.lms.gj10.*
 import de.lms.gj10.minesweeper.*
+import korlibs.datastructure.*
 import korlibs.image.color.*
 import korlibs.korge.input.*
 import korlibs.korge.view.*
@@ -59,6 +60,7 @@ class GridManager(
             .filter { it.building?.type == BuildingType.Extractor }
             .sumOf { mineSweeper[it.x, it.y].number }
     }
+    val gridInfo : List<TileInfo> get() = mineSweeper.map { TileInfo(it, gridElements[it.id].building?.type) }
     fun initializeGrid() = container.apply {
         for (x in 0 until mineSweeper.width) {
             for (y in 0 until mineSweeper.height) {
