@@ -1,7 +1,5 @@
 package de.lms.gj10
 
-import GridManager
-import TileInfo
 import korlibs.korge.scene.*
 import korlibs.korge.view.*
 import korlibs.time.*
@@ -36,13 +34,28 @@ class GameplayScene : Scene() {
         val (tile, building) = tileInfo
         println("tile at (${tile.x}, ${tile.y}) clicked")
         if (building != null) return
-        if (!tile.isRevealed && buildingType != BuildingType.Excavator) return
-        //if (tile.isBomb) return
-        //if (tile.number <= 0) return
         if (buildingType == null) {
             changeMoney(tile.number.toLong())
         } else {
-            changeMoney(buildingType.cost)
+            // Building conditions:
+            if (!gridManager.hasRevealedNeighbor(tile.x, tile.y)) return
+            if (buildingType == BuildingType.Drill && tile.isRevealed) return
+            if (buildingType != BuildingType.Drill && !tile.isRevealed) return
+            if (buildingType == BuildingType.Extractor && tile.number <= 0) return
+            when (buildingType){
+                BuildingType.Drill -> {
+                    if (tile.isRevealed) return
+                }
+                BuildingType.Extractor -> {
+                    if (!tile.isRevealed) return
+                    if (tile.number <= 0) return
+                }
+                else -> {
+                    if (!tile.isRevealed) return
+                }
+            }
+            // building cost and actual build call
+            changeMoney(-buildingType.cost)
             gridManager.build(tile.x, tile.y, buildingType)
             if (!keys.shift) {
                 currBuildingType = null
@@ -51,17 +64,8 @@ class GameplayScene : Scene() {
         }
     }
 
-    private fun onButtonClicked(type: BuildingType) {
-        println("button $type clicked")
-        val buildingType = when (type) {
-            BuildingType.Base -> BuildingType.Base
-            BuildingType.Factory -> BuildingType.Factory
-            BuildingType.Extractor -> BuildingType.Extractor
-            BuildingType.Excavator -> BuildingType.Excavator
-            BuildingType.Turret -> BuildingType.Turret
-            BuildingType.Turret2 -> BuildingType.Turret2
-            BuildingType.Refinery -> BuildingType.Refinery
-        }
+    private fun onButtonClicked(buildingType: BuildingType) {
+        println("button $buildingType clicked")
         currBuildingType = if (currBuildingType == buildingType) {
             ui.onBuildingTypeChange(null)
             null
@@ -70,7 +74,7 @@ class GameplayScene : Scene() {
                 ui.onNotEnoughMoney()
                 null
             } else {
-                ui.onBuildingTypeChange(type)
+                ui.onBuildingTypeChange(buildingType)
                 buildingType
             }
         }

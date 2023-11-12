@@ -11,23 +11,23 @@ suspend fun initializeGameResources() {
     if (res != null) return
     res = GameResources(
         GameResources.Tiles(
-            img("tiles/hidden.png"),
-            img("icons/bomb.png"),
-            img("sprites/Nest.png"),
-            img("sprites/stone.png"),
-            img("tiles/empty.png"),
-            img("icons/question_mark.png"),
-            (0..8).map { img("icons/$it.png") },
-            mapOf(
+            hidden = img("tiles/hidden.png"),
+            bomb = img("icons/bomb.png"),
+            nest = img("sprites/Nest.png"),
+            stone = img("sprites/stone.png"),
+            empty = img("tiles/empty.png"),
+            unknown = img("icons/question_mark.png"),
+            spider = img("sprites/mobs/spider.png"),
+            numbers = (0..8).map { img("icons/$it.png") },
+            buildings = mapOf(
                 BuildingType.Base to img("sprites/BuildingRedBase.png"),
-                BuildingType.Factory to img("sprites/BuildingRedFactory.png"),
                 BuildingType.Extractor to img("sprites/BuildingRedExtractor.png"),
-                BuildingType.Excavator to img("sprites/BuildingRedExcavator.png"),
+                BuildingType.Drill to img("sprites/BuildingRedExcavator.png"),
                 BuildingType.Refinery to img("sprites/BuildingRedRefinery.png"),
                 BuildingType.Turret to img("sprites/BuildingRedTurret.png"),
                 BuildingType.Turret2 to img("sprites/BuildingRedTurret2.png"),
             ),
-            mapOf(
+            units = mapOf(
                 UnitType.Soldier to img("sprites/UnitRedSoldier.png"),
                 UnitType.Grenadier to img("sprites/UnitRedGrenadier.png"),
                 UnitType.Tank to img("sprites/UnitRedTank.png"),
@@ -36,9 +36,9 @@ suspend fun initializeGameResources() {
             ),
         ),
         GameResources.Images(
-            img("ui/glassPanel_cornerBR.png"),
-            img("ui/selectIcon.png"),
-            imgMapFromAToZ(),
+            glassPanel_cornerBR_Bitmap = img("ui/glassPanel_cornerBR.png"),
+            btnSelectedIcon = img("ui/selectIcon.png"),
+            hotkeyBtnBitmapMap = imgMapFromAToZ(),
         )
     )
 }
@@ -62,6 +62,7 @@ class GameResources(
         val stone: Bitmap,
         val empty: Bitmap,
         val unknown: Bitmap,
+        val spider: Bitmap,
         val numbers: List<Bitmap>,
         val buildings: Map<BuildingType, Bitmap>,
         val units: Map<UnitType, Bitmap>,

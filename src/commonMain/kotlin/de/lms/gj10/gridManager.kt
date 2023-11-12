@@ -1,4 +1,11 @@
-import de.lms.gj10.*
+package de.lms.gj10
+
+//TODO:
+// bases
+// bugfix shift
+// turrets
+
+
 import de.lms.gj10.minesweeper.*
 import korlibs.image.color.*
 import korlibs.korge.input.*
@@ -6,17 +13,17 @@ import korlibs.korge.view.*
 import korlibs.time.*
 
 
-data class BuildingData(
+private data class BuildingData(
     var image : Image,
     var type: BuildingType,
     var timeLeft: Int = 0,
 )
 
-data class GridElement(
+private data class GridElement(
     var image : Image,
     var x : Int,
     var y : Int,
-    var building : BuildingData?,
+    var building : BuildingData? = null,
     val id : Int,
     var imageNum : Int = -1, // 0 = hidden, 1 = bomb, 2 = empty uncovered, 3-10 = numbers(1-8), 10+ = buildings
     )
@@ -26,7 +33,7 @@ data class TileInfo(
     val buildingType : BuildingType? = null,
 )
 
-val Tile.imageNum : Int get() {
+private val Tile.imageNum : Int get() {
     if (!isRevealed) return 0
     if (isBomb) return 1
     return number + 2
@@ -36,6 +43,7 @@ class GridManager(
     private val container : SContainer,
     private val onTileClick : (TileInfo) -> Unit,
 ) {
+
     private val gridElements = mutableListOf<GridElement>()
     private val mineSweeper = generateSolvableMinesweeperGrid(gridWidth, gridHeight, 150)
     val totalExtractorIncome : Int get(){
@@ -43,15 +51,26 @@ class GridManager(
             .filter { it.building?.type == BuildingType.Extractor }
             .sumOf { mineSweeper[it.x, it.y].number }
     }
-    val gridInfo : List<TileInfo> get() = mineSweeper.map { TileInfo(it, gridElements[it.id].building?.type) }
+    val gridInfo : List<TileInfo> get() = mineSweeper.map { TileInfo(tile = it, buildingType = gridElements[it.id].building?.type) }
+    fun hasRevealedNeighbor(x : Int , y : Int) : Boolean {
+        for (dx in -1..1) {
+            for (dy in -1..1) {
+                if (x+dx < 0 || x+dy < 0 || x+dx >= gridWidth || y+dy >= gridHeight || (dx+dy)%2 == 0) continue
+                if (mineSweeper[dx + x, dy + y].isRevealed) return true
+            }
+        }
+        return false
+    }
     fun initializeGrid() = container.apply {
         for (x in 0 until mineSweeper.width) {
             for (y in 0 until mineSweeper.height) {
                 val tile = mineSweeper[x,y]
                 val img = tileImg(x,y,tile.imageNum)
-                gridElements += GridElement(img,x, y, null, tile.id ,tile.imageNum)
+                gridElements += GridElement(image = img,x = x, y = y, id = tile.id, imageNum = tile.imageNum)
             }
         }
+        build(gridWidth-1,gridHeight-1, BuildingType.Base)
+        build(0,0, BuildingType.Base)
         gridElements.sortBy { it.id }
     }
 
@@ -68,18 +87,18 @@ class GridManager(
 
     fun build(x: Int, y : Int, buildingType : BuildingType){
         val bitmap = gameResources.tiles.buildings[buildingType] ?: return
-        val building = BuildingData(container.image(bitmap), buildingType)
+        val building = BuildingData(image = container.image(bitmap), type = buildingType)
         val tile = mineSweeper[x, y]
         gridElements[tile.id].building = building
-        building.image.position(x * tileScale * tileSize, y * tileScale * tileSize)
-        building.image.scale = tileScale
-        if (building.type == BuildingType.Excavator){
+        building.image.position(x * tileSize, y * tileSize)
+        building.image.scale = tileSize / building.image.size.width
+        if (building.type == BuildingType.Drill){
             building.timeLeft = 5
-            building.image.addFixedUpdater(1.timesPerSecond) { excavate(x,y,building) }
+            building.image.addFixedUpdater(1.timesPerSecond) { drilling(x,y,building) }
         }
     }
 
-    private fun excavate(x : Int, y : Int, building : BuildingData){
+    private fun drilling(x : Int, y : Int, building : BuildingData){
         building.timeLeft--
         if (building.timeLeft > 0) return
         building.timeLeft = 0
@@ -106,14 +125,14 @@ class GridManager(
             }
             else -> container.image(gameResources.tiles.unknown)
         }
-        img.position(x * tileScale * tileSize, y * tileScale * tileSize)
-        img.scale = tileScale
+        img.position(x * tileSize, y * tileSize)
+        img.scale = tileSize / img.size.width
         img.onClick { clickPreProcessing(x, y) }
         return img
     }
     private fun clickPreProcessing(x : Int, y : Int){
         val tile = mineSweeper[x, y]
         val gridElement =  gridElements[tile.id]
-        onTileClick(TileInfo(tile, gridElement.building?.type))
+        onTileClick(TileInfo(tile = tile, buildingType = gridElement.building?.type))
     }
 }
