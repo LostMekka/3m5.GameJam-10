@@ -18,6 +18,7 @@ class GameplayScene : Scene() {
     lateinit var ui: GameUi
     private var money = 100L
     private var currBuildingType: BuildingType? = null
+    private var musicChannel: SoundChannel? = null
 
     override suspend fun SContainer.sceneMain() {
         initializeGameResources() // must be the first thing here!
@@ -33,6 +34,13 @@ class GameplayScene : Scene() {
         addFixedUpdater(0.2.timesPerSecond) { unitManager.addUnit() }
 
         addEscapeMenu()
+        musicChannel = gameResources.audio.musicGameplay.playForever().also {
+            it.volume = 0.5
+        }
+    }
+
+    override suspend fun sceneBeforeLeaving() {
+        musicChannel?.stop()
     }
 
     fun playSound(sound: Sound, volume: Double = sfxVolume) {

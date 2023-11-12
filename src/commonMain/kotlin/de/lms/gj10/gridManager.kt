@@ -159,29 +159,36 @@ class GridManager(
         println("Shooting from $x,$y to ${target.x/tileSize},${target.y / tileSize}")
     }
 
-    private fun explode(x: Int, y: Int){
-        for (dx in -1..1){
-            for (dy in -1..1){
+    private fun explode(x: Int, y: Int) {
+        for (dx in -1..1) {
+            for (dy in -1..1) {
+                if (dx == 0 && dy == 0) continue
                 reveal(x + dx, y + dy)
-                val elem = gridElements[mineSweeper[x+dx,y+dy].id]
-                if (elem.building != null){
+                val elem = gridElements[mineSweeper[x + dx, y + dy].id]
+                elem.image.removeFromParent()
+                elem.image = tileImg(x + dx, y + dy, 2)
+                if (elem.building != null) {
                     elem.building?.image?.removeFromParent()
-                    gridElements[mineSweeper[x,y].id].building = null
-                    scene.onBuildingDestroyed(TileInfo(tile= mineSweeper[x,y], buildingType= elem.building?.type))
+                    gridElements[mineSweeper[x, y].id].building = null
+                    scene.onBuildingDestroyed(TileInfo(tile = mineSweeper[x, y], buildingType = elem.building?.type))
                 }
                 for (target in scene.unitManager.listEnemies()
-                    .filter { enemy -> 2 >= Point2.distanceSquared(x.toDouble(), y.toDouble(), enemy.x / tileSize, enemy.y / tileSize) }){
+                    .filter { enemy -> 2 >= Point2.distanceSquared(x.toDouble(), y.toDouble(), enemy.x / tileSize, enemy.y / tileSize) }) {
                     scene.unitManager.damageEnemy(target.id, 999)
                 }
-                //val bitmap = gameResources.tiles.boom_anim[0]
-                //val anim = Animation(image = container.image(bitmap), imgList = gameResources.tiles.boom_anim)
-
             }
         }
     }
 
+    private fun imgDestroySelf(img: Image){
+        img.removeFromParent()
+    }
+
     private fun drilling(x : Int, y : Int, building : BuildingData){
-        if (mineSweeper[x,y].isBomb) explode(x,y)
+        if (mineSweeper[x,y].isBomb){
+            explode(x,y)
+            reveal(x,y)
+        }
         building.timeLeft--
         if (building.timeLeft > 0) return
         building.timeLeft = 0
@@ -220,6 +227,7 @@ class GridManager(
     private fun clickPreProcessing(x: Int, y: Int, mouseEvents: MouseEvents){
         val tile = mineSweeper[x, y]
         val gridElement =  gridElements[tile.id]
+        if (!tile.isRevealed && tile.isBomb) explode(x,y)
         scene.onTileClicked(TileInfo(tile = tile, buildingType = gridElement.building?.type), mouseEvents.button)
     }
 }

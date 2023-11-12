@@ -35,12 +35,7 @@ suspend fun initializeGameResources() {
                 UnitType.RocketTank to img("sprites/UnitRedRocketTank.png"),
                 UnitType.Bomber to img("sprites/UnitRedBomber.png"),
             ),
-            boom_anim = listOf(
-                img("effects/boom_anim_1.png"),
-                img("effects/boom_anim_2.png"),
-                img("effects/boom_anim_3.png"),
-                img("effects/boom_anim_4.png"),
-            )
+            boom = img("effects/boom_anim_2.png"),
         ),
         GameResources.Images(
             glassPanel_cornerBR_Bitmap = img("ui/glassPanel_cornerBR.png"),
@@ -48,6 +43,7 @@ suspend fun initializeGameResources() {
             hotkeyBtnBitmapMap = imgMapFromAToZ(),
         ),
         GameResources.Audio(
+            musicGameplay = resourcesVfs["sfx/3m5gj10.mp3"].readMusic(),
             sfxBtnSelect = resourcesVfs["sfx/sfx_btn_select.wav"].readSound(),
             sfxBtnDeselect = resourcesVfs["sfx/sfx_btn_deselect.wav"].readSound(),
             sfxBtnSelectInvalid = resourcesVfs["sfx/sfx_btn_select_invalid.wav"].readSound(),
@@ -91,7 +87,7 @@ class GameResources(
         val numbers: List<Bitmap>,
         val buildings: Map<BuildingType, Bitmap>,
         val units: Map<UnitType, Bitmap>,
-        val boom_anim: List<Bitmap>
+        val boom: Bitmap
     )
 
     class Images(
@@ -101,6 +97,7 @@ class GameResources(
     )
 
     class Audio(
+        val musicGameplay: Sound,
         val sfxBtnSelect: Sound,
         val sfxBtnDeselect: Sound,
         val sfxBtnSelectInvalid: Sound,
