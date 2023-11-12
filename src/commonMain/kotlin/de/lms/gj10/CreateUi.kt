@@ -17,7 +17,7 @@ class GameUi(
 //    private val onBuildUnitBtnPress : (UnitType) -> Unit,
 ) {
     private var btnCount: Int = 0
-    private val defaultSpacing: Int = 8
+    private val defaultSpacing: Int = 10
     private val costTextBlocks: MutableMap<BuildingType, TextBlock> = mutableMapOf()
     private val selectIcons: MutableMap<BuildingType, Image> = mutableMapOf()
 
@@ -55,9 +55,11 @@ class GameUi(
         money = newMoney
         textMoney.text = getMoneyText(newMoney)
     }
+
     fun onNotEnoughMoney() {
 
     }
+
     fun onBuildingTypeChange(buildingType: BuildingType?) {
         updateBtnActive(buildingType == BuildingType.Excavator, btnBuildingExcavator, BuildingType.Excavator)
         updateBtnActive(buildingType == BuildingType.Extractor, btnBuildingExtractor, BuildingType.Extractor)
@@ -125,7 +127,7 @@ class GameUi(
     // SHOOT SFX
 
     private fun SContainer.generateButton(
-        btnSize: Int = 80,
+        btnSize: Int = 100,
         btnPosX: Int = windowWidth,
         btnPosY: Int = windowHeight,
         spacing: Int = defaultSpacing,
@@ -139,6 +141,10 @@ class GameUi(
 
         // Initial Create button
         val newBtn = uiButton() {
+            if (cost > money) {
+                colorMul = MaterialColors.GRAY_700
+            }
+
             bgColorOut = Colors.TRANSPARENT
             bgColorDisabled = Colors.TRANSPARENT
             bgColorOver = Colors.TRANSPARENT
@@ -161,7 +167,7 @@ class GameUi(
             position(
                 btnPosX - btnSize - spacing,
                 btnPosY - ((btnCount + 1) * btnSize) // place btn
-                    - ((btnCount + 1) * spacing) // add spacing
+                    - ((btnCount + 1) * spacing) + 4 // add spacing
             )
             size(btnSize, btnSize)
             background.radius = RectCorners(btnSize / 12, btnSize / 12, btnSize / 4, btnSize / 12)
