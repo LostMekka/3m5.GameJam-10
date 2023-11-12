@@ -10,15 +10,20 @@ package de.lms.gj10
 import de.lms.gj10.minesweeper.*
 import korlibs.event.*
 import korlibs.image.color.*
+import korlibs.image.vector.*
 import korlibs.korge.input.*
 import korlibs.korge.view.*
+import korlibs.math.geom.*
+import korlibs.math.geom.Line
 import korlibs.time.*
+import kotlin.math.*
 
 
 private data class BuildingData(
     var image : Image,
     var type: BuildingType,
     var timeLeft: Int = 0,
+    var range: Double = 10.0,
     var hp: Int = 1,
 )
 
@@ -44,8 +49,9 @@ private val Tile.imageNum : Int get() {
 
 class GridManager(
     private val container: SContainer,
-    private val onTileClick: (TileInfo, MouseButton) -> Unit,
-    private val onBuildingDestroy: (TileInfo) -> Unit,
+    private val scene : GameplayScene,
+    //private val onTileClick: (TileInfo, MouseButton) -> Unit,
+    //private val onBuildingDestroy: (TileInfo) -> Unit,
 ) {
 
     private val gridElements = mutableListOf<GridElement>()
@@ -96,16 +102,24 @@ class GridManager(
         gridElements[tile.id].building = building
         building.image.position(x * tileSize, y * tileSize)
         building.image.scale = tileSize / building.image.size.width
-        if (building.type == BuildingType.Drill){
-            building.timeLeft = 5
-            building.image.addFixedUpdater(1.timesPerSecond) { drilling(x,y,building) }
-        }
-        if (building.type == BuildingType.Nest) {
-            building.image.scale *= 2
-        }
-        if (building.type == BuildingType.Base){
-            building.image.scale *= 2
-            building.image.position((x-1)* tileSize, (y-1)* tileSize)
+        when (building.type) {
+            BuildingType.Drill -> {
+                building.timeLeft = 5
+                building.image.addFixedUpdater(1.timesPerSecond) { drilling(x, y, building) }
+            }
+            BuildingType.Turret -> {
+                building.timeLeft = 1 // shooting frequency
+                building.range = 10.0
+                building.image.addFixedUpdater(2.timesPerSecond) { shoot(mineSweeper[x,y].id, 10) }
+            }
+            BuildingType.Nest -> {
+                building.image.scale *= 2
+            }
+            BuildingType.Base -> {
+                building.image.scale *= 2
+                building.image.position((x - 1) * tileSize, (y - 1) * tileSize)
+            }
+            else -> {}
         }
     }
 
@@ -115,12 +129,23 @@ class GridManager(
         if (building.hp <= 0) {
             building.image.removeFromParent()
             gridElements[mineSweeper[x,y].id].building = null
-            onBuildingDestroy(TileInfo(tile= mineSweeper[x,y], buildingType= building.type))
+            scene.onBuildingDestroyed(TileInfo(tile= mineSweeper[x,y], buildingType= building.type))
         }
         return true
     }
 
-    fun shoot(x : Int, y : Int, damage : Int){
+    private fun shoot(elemId : Int, damage : Int){
+        val turret = gridElements[elemId].building ?: return
+        val x = gridElements[elemId].x.toDouble()
+        val y = gridElements[elemId].y.toDouble()
+        val target = scene.unitManager.listEnemies()
+            .firstOrNull{enemy -> (turret.range * turret.range) >= Point2.distanceSquared(x, y, enemy.x / tileSize, enemy.y / tileSize)}
+            ?: return
+        scene.unitManager.damageEnemy(target.id, damage)
+        println("Shooting from $x,$y to ${target.x/tileSize},${target.y / tileSize}")
+    }
+
+    private fun explode(){
 
     }
 
@@ -131,7 +156,7 @@ class GridManager(
         gridElements[mineSweeper[x,y].id].building?.image?.removeFromParent()
         gridElements[mineSweeper[x,y].id].building = null
         reveal(x,y)
-        onBuildingDestroy(TileInfo(tile= mineSweeper[x,y], buildingType= building.type))
+        scene.onBuildingDestroyed(TileInfo(tile= mineSweeper[x,y], buildingType= building.type))
     }
 
     private fun tileImg(x : Int,y : Int, imageNum: Int) : Image {
@@ -163,6 +188,6 @@ class GridManager(
     private fun clickPreProcessing(x: Int, y: Int, mouseEvents: MouseEvents){
         val tile = mineSweeper[x, y]
         val gridElement =  gridElements[tile.id]
-        onTileClick(TileInfo(tile = tile, buildingType = gridElement.building?.type), mouseEvents.button)
+        scene.onTileClicked(TileInfo(tile = tile, buildingType = gridElement.building?.type), mouseEvents.button)
     }
 }
