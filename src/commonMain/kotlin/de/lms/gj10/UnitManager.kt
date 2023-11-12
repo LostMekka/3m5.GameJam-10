@@ -1,6 +1,7 @@
 package de.lms.gj10
 
 import de.lms.gj10.minesweeper.*
+import korlibs.io.async.*
 import korlibs.korge.view.*
 import korlibs.korge.view.align.*
 import korlibs.math.*
@@ -12,6 +13,7 @@ import kotlin.random.*
 class UnitManager(
     private val rootContainer: SContainer,
     private val gridManager: GridManager,
+    private val scene : GameplayScene,
 ) {
     private var nextUnitId = 0
     private data class UnitEntry(
@@ -81,7 +83,14 @@ class UnitManager(
     fun damageEnemy(enemyId: Int, damage: Int) {
         val unit = unitsById[enemyId] ?: return
         unit.hp -= damage
-        if (unit.hp <= 0) removeUnit(enemyId)
+        if (unit.hp <= 0) {
+            removeUnit(enemyId)
+
+            // play sound - death
+            scene.playSound(gameResources.audio.sfxAlienDeathscream)
+        } else {
+            // todo play sound - dmg enemy
+        }
     }
 
     fun onThreatLevelChanged(newValue: Long) {
