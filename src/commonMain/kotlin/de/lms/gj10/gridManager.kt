@@ -158,13 +158,15 @@ class GridManager(
             .firstOrNull{enemy -> (turret.range * turret.range) >= Point2.distanceSquared(x, y, enemy.x / tileSize, enemy.y / tileSize)}
         if (target == null){
             if (x+y <= turret.range) attack(0,0,damage)
+            else return
         }
         else {
             scene.unitManager.damageEnemy(target.id, damage)
         }
-        turret.tempImg = Image(gameResources.tiles.boom)
-        turret.tempImg?.position(x * tileSize, y * tileSize)
-        turret.tempImg?.addFixedUpdater(3.timesPerSecond){ tempImgDestroy(elemId) }
+        scene.playSound(gameResources.audio.sfxBuildingTurretPew)
+//        turret.tempImg = Image(gameResources.tiles.boom)
+//        turret.tempImg?.position(x * tileSize, y * tileSize)
+//        turret.tempImg?.addFixedUpdater(3.timesPerSecond){ tempImgDestroy(elemId) }
     }
 
     private fun explode(x: Int, y: Int) {
@@ -192,6 +194,7 @@ class GridManager(
 
             }
         }
+        scene.playSound(gameResources.audio.sfxBombBoom)
     }
 
     private fun tempImgDestroy(id: Int){
