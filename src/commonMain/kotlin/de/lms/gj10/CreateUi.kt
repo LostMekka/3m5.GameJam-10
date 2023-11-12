@@ -17,14 +17,15 @@ class GameUi(
 //    private val onBuildUnitBtnPress : (UnitType) -> Unit,
 ) {
     private var btnCount: Int = 0
-    private val defaultSpacing: Int = 10
+    private val defaultSpacingX: Int = 8
+    private val defaultSpacingY: Int = 45
     private val costTextBlocks: MutableMap<BuildingType, TextBlock> = mutableMapOf()
     private val selectIcons: MutableMap<BuildingType, Image> = mutableMapOf()
     private val buttons: MutableMap<BuildingType, UIButton> = mutableMapOf()
 
     private val textWidth = 100f
     private val textHeight = 48f
-    private val textPosX = windowWidth - textWidth - defaultSpacing
+    private val textPosX = windowWidth - textWidth - defaultSpacingX
 
     private val textMoney: TextBlock
     private var money: Long = 0
@@ -98,13 +99,13 @@ class GameUi(
             getMoneyText(0),
             size = Size(textWidth, textHeight)
         )
-        textMoney.position(textPosX, defaultSpacing)
+        textMoney.position(textPosX, defaultSpacingX)
 
         textScore = container.textBlock(
             getScoreText(0),
             size = Size(textWidth, textHeight)
         )
-        textScore.position(textPosX, (defaultSpacing * 2) + textHeight)
+        textScore.position(textPosX, (defaultSpacingX * 2) + textHeight)
 
         btnBuildingExcavator = container.generateButton(
             mainImg = gameResources.tiles.buildings.getValue(BuildingType.Excavator),
@@ -127,7 +128,6 @@ class GameUi(
     }
 
     // TODO
-    // BTN AUSGRAUEN WENN NICHT GENUG GELD
     // Start/Restart/Exit / Hauptmenu neue Scene
     // UI SOUNDS
     // BG Music (MACHT STEFKA)
@@ -139,7 +139,8 @@ class GameUi(
         btnSize: Int = 100,
         btnPosX: Int = windowWidth,
         btnPosY: Int = windowHeight,
-        spacing: Int = defaultSpacing,
+        spacingX: Int = defaultSpacingX,
+        spacingY: Int = defaultSpacingY,
 
         mainImg: Bitmap,
         hotKey: Char? = null,
@@ -174,9 +175,9 @@ class GameUi(
             }
 
             position(
-                btnPosX - btnSize - spacing,
+                btnPosX - btnSize - spacingX,
                 btnPosY - ((btnCount + 1) * btnSize) // place btn
-                    - ((btnCount + 1) * spacing) + 4 // add spacing
+                    - ((btnCount + 1) * spacingY) + (defaultSpacingY / 3) // add spacing
             )
             size(btnSize, btnSize)
             background.radius = RectCorners(btnSize / 12, btnSize / 12, btnSize / 4, btnSize / 12)
@@ -224,6 +225,25 @@ class GameUi(
             costTextBlock.position(btnSize * .32, -btnSize * .03)
             // Store the reference to the cost TextBlock
             costTextBlocks[type] = costTextBlock
+
+            // Building Name
+            uiMaterialLayer() {
+                size(btnSize * 0.95, 20)
+                position(btnSize * .025, btnSize + 5)
+                radius = RectCorners(4f, 4f, 4f, 4f)
+                bgColor = RGBA(0x00, 0x00, 0x00, 0x87)
+                borderColor = MaterialColors.BLUE_500
+                borderSize = 2.0
+                zIndex=0.0
+            }
+            val nameTextBlock = textBlock(
+                RichTextData.fromHTML(
+                    "<font color=white><b>${type.name}</b></font>",
+                    RichTextData.Style.DEFAULT.copy(font = DefaultTtfFontAsBitmap)
+                ),
+                size = Size(btnSize * .65, 15),
+            )
+            nameTextBlock.position(btnSize * .085, btnSize + 7.5)
 
             // hotkey
             val hotKeyBitmap =  gameResources.images.hotkeyBtnBitmapMap[validHotKey]
