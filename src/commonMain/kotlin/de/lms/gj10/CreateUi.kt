@@ -19,10 +19,11 @@ class GameUi(
     private val container : SContainer,
     private val onBuildBuildingBtnPress : (BuildingType) -> Unit,
 //    private val onBuildUnitBtnPress : (UnitType) -> Unit,
-    private val costTextBlocks: MutableMap<BuildingType, TextBlock> = mutableMapOf()
 ) {
     private var btnCount: Int = 0
     private val defaultSpacing: Int = 8
+    private val costTextBlocks: MutableMap<BuildingType, TextBlock> = mutableMapOf()
+    private val selectIcons: MutableMap<BuildingType, TextBlock> = mutableMapOf()
 
     private val textWidth = 100f
     private val textHeight = 48f
@@ -117,8 +118,6 @@ class GameUi(
 
     // TODO
     // BTN AUSGRAUEN WENN NICHT GENUG GELD
-    //  UPDATE COST ON BTN
-    // ADD COST ON BTN
     // Start/Restart/Exit / Hauptmenu neue Scene
     // UI SOUNDS
     // BG Music (MACHT STEFKA)
@@ -183,6 +182,14 @@ class GameUi(
                 zIndex=-1.0
             }
 
+            // Selected Image
+            image(gameResources.images.btnSelectedIcon) {
+                smoothing = false
+                size(btnSize, btnSize)
+                colorMul = Colors.WHITE
+                colorMul = Colors.TRANSPARENT_WHITE
+                zIndex=-1.0
+            }
 
             uiMaterialLayer() {
                 size(btnSize * .7, 20)
@@ -191,6 +198,7 @@ class GameUi(
                 bgColor = RGBA(0x00, 0x00, 0x00, 0x87)
                 borderColor = Colors.LIGHTBLUE
                 borderSize = 2.0
+                zIndex=0.0
             }
             val costTextBlock = textBlock(
                 getCostText(cost),
