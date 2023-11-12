@@ -1,7 +1,5 @@
 package de.lms.gj10
 
-import GridManager
-import TileInfo
 import de.lms.gj10.minesweeper.*
 import korlibs.korge.view.*
 import korlibs.math.*

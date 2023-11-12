@@ -1,4 +1,5 @@
-import de.lms.gj10.*
+package de.lms.gj10
+
 import de.lms.gj10.minesweeper.*
 import korlibs.image.color.*
 import korlibs.korge.input.*

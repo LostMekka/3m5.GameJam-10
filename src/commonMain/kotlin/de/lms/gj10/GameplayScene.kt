@@ -1,7 +1,5 @@
 package de.lms.gj10
 
-import GridManager
-import TileInfo
 import korlibs.korge.scene.*
 import korlibs.korge.view.*
 import korlibs.time.*
