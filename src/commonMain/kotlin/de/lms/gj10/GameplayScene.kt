@@ -2,19 +2,11 @@ package de.lms.gj10
 
 import GridManager
 import TileInfo
-import korlibs.korge.*
 import korlibs.korge.scene.*
 import korlibs.korge.view.*
-import korlibs.image.color.*
-import korlibs.math.geom.*
 import korlibs.time.*
 
-suspend fun main() = Korge(windowSize = Size(windowWidth, windowHeight), backgroundColor = Colors["#2b2b2b"]) {
-    val sceneContainer = sceneContainer()
-    sceneContainer.changeTo { MyScene() }
-}
-
-class MyScene : Scene() {
+class GameplayScene : Scene() {
     private lateinit var gridManager: GridManager
     private lateinit var unitManager: UnitManager
     private lateinit var ui: GameUi
@@ -24,12 +16,12 @@ class MyScene : Scene() {
     override suspend fun SContainer.sceneMain() {
         initializeGameResources() // must be the first thing here!
 
-        gridManager = GridManager(this, this@MyScene::onTileClicked)
+        gridManager = GridManager(this, this@GameplayScene::onTileClicked)
         gridManager.initializeGrid()
 
         unitManager = UnitManager(this, gridManager)
 
-        ui = GameUi(this, this@MyScene::onButtonClicked)
+        ui = GameUi(this, this@GameplayScene::onButtonClicked)
 
         addFixedUpdater(1.timesPerSecond) { addIncome() }
     }
