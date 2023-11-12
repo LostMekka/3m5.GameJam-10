@@ -182,8 +182,7 @@ class GridManager(
                 val elem = gridElements[mineSweeper[x + dx, y + dy].id]
                 if (tile.isRevealed) {
                     reveal(tile.x, tile.y)
-                    //elem.image.removeFromParent()
-                    //elem.image = tileImg(tile.x, tile.y, elem.imageNum)
+                    //if (tile.isBomb) explode(tile.x, tile.y)
                 }
                 if (elem.building != null) {
                     elem.building?.image?.removeFromParent()
