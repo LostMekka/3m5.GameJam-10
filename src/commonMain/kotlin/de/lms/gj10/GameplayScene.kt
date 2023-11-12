@@ -1,9 +1,15 @@
 package de.lms.gj10
 
 import korlibs.event.*
+import korlibs.io.async.*
+import korlibs.korge.component.*
 import korlibs.korge.scene.*
+import korlibs.korge.ui.*
 import korlibs.korge.view.*
+import korlibs.korge.view.align.*
+import korlibs.math.geom.*
 import korlibs.time.*
+import korlibs.korge.input.*
 
 class GameplayScene : Scene() {
     private lateinit var gridManager: GridManager
@@ -23,7 +29,36 @@ class GameplayScene : Scene() {
         ui = GameUi(this, this@GameplayScene::onButtonClicked)
 
         addFixedUpdater(1.timesPerSecond) { addIncome() }
+
+        var menuOpen = false
+        fun openMenuWindow() {
+            uiWindow("Menu", Size(windowWidth / 4, windowHeight / 4)) {
+                uiButton("Restart Game") {
+                    onPress {
+                        launchImmediately {
+                            sceneContainer.changeTo<GameplayScene>()
+                        }
+                    }
+                    position(windowWidth / 16, windowWidth / 16)
+                }
+
+                this.onAttachDetach(onDetach = {
+                    menuOpen = false
+                })
+            }.centerOnStage()
+        }
+
+        keys {
+            down(Key.ESCAPE) {
+                if (menuOpen == false) {
+                    openMenuWindow()
+                    menuOpen = true
+                }
+            }
+        }
     }
+
+
 
     private fun addIncome() {
         val income = gridManager.totalExtractorIncome

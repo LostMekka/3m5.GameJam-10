@@ -1,6 +1,6 @@
 package de.lms.gj10
 
-const val windowWidth = 1024
+const val windowWidth = 900
 const val windowHeight = 768
 const val gridWidth = 32
 const val gridHeight = 32
