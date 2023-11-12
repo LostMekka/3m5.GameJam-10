@@ -6,29 +6,11 @@ import korlibs.korge.view.*
 import korlibs.time.*
 
 
-enum class BuildingType {
-    Base,
-    Factory,
-    Extractor,
-    Excavator,
-    Turret,
-    Turret2,
-    Refinery,
-}
-
 data class BuildingData(
     var image : Image,
     var type: BuildingType,
     var timeLeft: Int = 0,
 )
-
-enum class UnitType {
-    Soldier,
-    Grenadier,
-    Tank,
-    RocketTank,
-    Bomber,
-}
 
 data class GridElement(
     var image : Image,
@@ -135,8 +117,3 @@ class GridManager(
         onTileClick(TileInfo(tile, gridElement.building?.type))
     }
 }
-
-const val gridWidth = 32
-const val gridHeight = 32
-const val tileSize = 16
-const val tileScale : Double = 1.5

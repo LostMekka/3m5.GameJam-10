@@ -1,7 +1,5 @@
 package de.lms.gj10
 
-import BuildingType
-import buildingCosts
 import korlibs.event.*
 import korlibs.image.bitmap.*
 import korlibs.image.color.*
@@ -11,8 +9,6 @@ import korlibs.korge.input.*
 import korlibs.korge.ui.*
 import korlibs.korge.view.*
 import korlibs.math.geom.*
-import windowHeight
-import windowWidth
 
 
 class GameUi(
@@ -105,19 +101,19 @@ class GameUi(
             mainImg = gameResources.tiles.buildings.getValue(BuildingType.Excavator),
             type = BuildingType.Excavator,
             hotKey = 'e',
-            cost = buildingCosts.getValue(BuildingType.Excavator).cost,
+            cost = BuildingType.Excavator.cost,
         )
         btnBuildingExtractor = container.generateButton(
             mainImg = gameResources.tiles.buildings.getValue(BuildingType.Extractor),
             type = BuildingType.Extractor,
             hotKey = 'w',
-            cost = buildingCosts.getValue(BuildingType.Extractor).cost,
+            cost = BuildingType.Extractor.cost,
         )
         btnBuildingTurret = container.generateButton(
             mainImg = gameResources.tiles.buildings.getValue(BuildingType.Turret),
             type = BuildingType.Turret,
             hotKey = 'q',
-            cost = buildingCosts.getValue(BuildingType.Turret).cost,
+            cost = BuildingType.Turret.cost,
         )
     }
 
