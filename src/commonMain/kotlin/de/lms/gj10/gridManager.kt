@@ -2,11 +2,10 @@ package de.lms.gj10
 
 // bases
 // attack function
-//TODO:
 // bugfix shift
-// background image
+//TODO:
 // turrets
-
+// background image
 
 import de.lms.gj10.minesweeper.*
 import korlibs.event.*
@@ -121,7 +120,9 @@ class GridManager(
         return true
     }
 
-    fun shoot()
+    fun shoot(x : Int, y : Int, damage : Int){
+
+    }
 
     private fun drilling(x : Int, y : Int, building : BuildingData){
         building.timeLeft--
