@@ -1,80 +1,98 @@
 package de.lms.gj10
 
 import BuildingType
-import UnitType
 import korlibs.event.*
 import korlibs.image.bitmap.*
 import korlibs.image.color.*
 import korlibs.image.font.*
 import korlibs.image.text.*
 import korlibs.korge.input.*
-import korlibs.korge.render.*
 import korlibs.korge.ui.*
 import korlibs.korge.view.*
-import korlibs.logger.*
 import korlibs.math.geom.*
 import windowHeight
 import windowWidth
 
-//enum class UiBtnType {
-////    StartGame,
-////    ExitGame,
-//    BuildBuilding,
-//    BuildUnit,
-////    BuildFactory,
-////    BuildSoldier,
-//}
+
 class GameUi(
-    // private val scoreTextField: Text,
     private val container : SContainer,
     private val onBuildBuildingBtnPress : (BuildingType) -> Unit,
 //    private val onBuildUnitBtnPress : (UnitType) -> Unit,
 ) {
-    private val textMoney: TextBlock
-    private val myBtn: UIButton
-//    private val myBtn2: UIButton
     private var btnCount: Int = 0
     private val defaultSpacing: Int = 8
 
-    fun onMoneyChanged(newMoney: Long) {
-        textMoney.text = RichTextData.fromHTML(
-//                "hello <b>world</b>, <font color=red>this</font> is a long text that won't fit!",
-            "<font color=gold>$</font> $newMoney",
+    private val textWidth = 100f
+    private val textHeight = 48f
+    private val textPosX = windowWidth - textWidth - defaultSpacing
+
+    private val textMoney: TextBlock
+    private val textScore: TextBlock
+    private val btnBuildingExcavator: UIButton
+    private val btnBuildingExtractor: UIButton
+    private val btnBuildingTurret: UIButton
+
+    fun getMoneyText(newMoney: Long): RichTextData {
+        return RichTextData.fromHTML(
+            "<font color=gold>$</font> <font color=green>$newMoney</font>",
             RichTextData.Style.DEFAULT.copy(font = DefaultTtfFontAsBitmap)
         )
-        // TODO
+    }
+    fun getScoreText(newScore: Long): RichTextData {
+        return RichTextData.fromHTML(
+            "<font color=lightblue>Score</font> $newScore",
+            RichTextData.Style.DEFAULT.copy(font = DefaultTtfFontAsBitmap)
+        )
+    }
+
+    fun onMoneyChanged(newMoney: Long) {
+        textMoney.text = getMoneyText(newMoney)
     }
     fun onNotEnoughMoney() {
 
     }
     fun onBuildingTypeChange(btnType: BuildingType?) {
-//        myBtn.bgColorOut = ()
-//        updateBtnActive(btnType == UiBtnType.BuildFactory, myBtn)
-//        color = if UiBtnType = mytype ? RED : BLUE
+        updateBtnActive(btnType == BuildingType.Excavator, btnBuildingExcavator)
+        updateBtnActive(btnType == BuildingType.Extractor, btnBuildingExtractor)
+        updateBtnActive(btnType == BuildingType.Turret, btnBuildingTurret)
     }
 
     private fun updateBtnActive(active: Boolean, btn: UIButton) {
-//        if ()
+        if (active) {
+            btn.colorMul = Colors.RED
+        } else {
+            btn.colorMul = Colors.BLUE
+        }
     }
 
     init {
         textMoney = container.textBlock(
-            RichTextData.fromHTML(
-                "<font color=gold>$</font> 0",
-                RichTextData.Style.DEFAULT.copy(font = DefaultTtfFontAsBitmap)
-            ),
-            size = Size(100f, 48f)
+            getMoneyText(0),
+            size = Size(textWidth, textHeight)
         )
-        textMoney.position(windowWidth - textMoney.width - defaultSpacing, defaultSpacing)
+        textMoney.position(textPosX, defaultSpacing)
 
-        myBtn = container.generateButton(
-            mainImg = gameResources.tiles.buildings.getValue(BuildingType.Factory),
-            type = BuildingType.Factory,
+        textScore = container.textBlock(
+            getScoreText(0),
+            size = Size(textWidth, textHeight)
         )
-//        myBtn2 = container.generateButton()
-//        container.generateButton()
-//        container.generateButton()
-//        container.generateButton()
+        textScore.position(textPosX, (defaultSpacing * 2) + textHeight)
+
+        btnBuildingExcavator = container.generateButton(
+            mainImg = gameResources.tiles.buildings.getValue(BuildingType.Excavator),
+            type = BuildingType.Excavator,
+            hotKey = 'e'
+        )
+        btnBuildingExtractor = container.generateButton(
+            mainImg = gameResources.tiles.buildings.getValue(BuildingType.Extractor),
+            type = BuildingType.Extractor,
+            hotKey = 'w'
+        )
+        btnBuildingTurret = container.generateButton(
+            mainImg = gameResources.tiles.buildings.getValue(BuildingType.Turret),
+            type = BuildingType.Turret,
+            hotKey = 'q'
+        )
     }
 
     // TODO
@@ -96,6 +114,8 @@ class GameUi(
         hotKey: Char? = null,
         type: BuildingType
     ): UIButton {
+        val validHotKey = hotKey?.takeIf { it in 'a'..'z' }
+
         // Initial Create button
         val newBtn = uiButton() {
             bgColorOut = Colors.TRANSPARENT
@@ -103,19 +123,23 @@ class GameUi(
             bgColorOver = Colors.TRANSPARENT
             bgColorSelected = Colors.TRANSPARENT
             elevation = false
-            if (hotKey !== null) {
-                keys { down(Key.K) {
-                    onBuildBuildingBtnPress(type) }
+            if (validHotKey !== null) {
+                keys {
+                    // Use a when statement with a range of possible keys
+                    down(when (validHotKey) {
+                        in 'a'..'z' -> Key.valueOf("${validHotKey.uppercaseChar()}") // Assuming Key enum has constants like KEY_A, KEY_B, etc.
+                        else -> Key.UNKNOWN // or any default Key you want to use
+                    }) {
+                        onBuildBuildingBtnPress(type)
+                    }
                 }
-//            onPress { onBuildBtnPress(UiBtnType.BuildFactory) }
-                onPress {
-                    onBuildBuildingBtnPress(type)
-                }
+
+                onPress { onBuildBuildingBtnPress(type) }
             }
 
             position(
-                windowWidth - btnSize - spacing,
-                windowHeight - ((btnCount + 1) * btnSize) // place btn
+                btnPosX - btnSize - spacing,
+                btnPosY - ((btnCount + 1) * btnSize) // place btn
                     - ((btnCount + 1) * spacing) // add spacing
             )
             size(btnSize, btnSize)
@@ -137,8 +161,8 @@ class GameUi(
                 zIndex=-1.0
             }
 
-            val hotKeyBitmap =  gameResources.images.hotkeyBtnBitmapMap[hotKey]
-            if (hotKey != null && hotKeyBitmap != null) {
+            val hotKeyBitmap =  gameResources.images.hotkeyBtnBitmapMap[validHotKey]
+            if (validHotKey != null && hotKeyBitmap != null) {
                 // Hotkey Image
                 image(hotKeyBitmap) {
                     smoothing = false
@@ -154,5 +178,3 @@ class GameUi(
     }
 
 }
-
-
