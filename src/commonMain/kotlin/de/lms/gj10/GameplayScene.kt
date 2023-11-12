@@ -21,7 +21,7 @@ class GameplayScene : Scene() {
     override suspend fun SContainer.sceneMain() {
         initializeGameResources() // must be the first thing here!
 
-        gridManager = GridManager(this, this@GameplayScene::onTileClicked)
+        gridManager = GridManager(this, this@GameplayScene::onTileClicked, this@GameplayScene::onBuildingDestroyed)
         gridManager.initializeGrid()
 
         unitManager = UnitManager(this, gridManager)
@@ -29,6 +29,7 @@ class GameplayScene : Scene() {
         ui = GameUi(this, this@GameplayScene::onButtonClicked)
 
         addFixedUpdater(1.timesPerSecond) { addIncome() }
+        addFixedUpdater(0.2.timesPerSecond) { unitManager.addUnit() }
 
         var menuOpen = false
         fun openMenuWindow() {
@@ -59,13 +60,17 @@ class GameplayScene : Scene() {
     }
 
 
-
     private fun addIncome() {
         val income = gridManager.totalExtractorIncome
         changeMoney(income.toLong())
     }
 
-    private fun onTileClicked(tileInfo: TileInfo) {
+    private fun onTileClicked(tileInfo: TileInfo, button: MouseButton) {
+        if (button == MouseButton.RIGHT) {
+            currBuildingType = null
+            ui.onBuildingTypeChange(null)
+            return
+        }
         val buildingType = currBuildingType
         val (tile, building) = tileInfo
         println("tile at (${tile.x}, ${tile.y}) clicked")
@@ -73,27 +78,31 @@ class GameplayScene : Scene() {
         if (buildingType == null) {
             changeMoney(tile.number.toLong())
         } else {
+            if (!hasEnoughMoney(buildingType.cost)) return
             // Building conditions:
             if (!gridManager.hasRevealedNeighbor(tile.x, tile.y)) return
             if (buildingType == BuildingType.Drill && tile.isRevealed) return
             if (buildingType != BuildingType.Drill && !tile.isRevealed) return
             if (buildingType == BuildingType.Extractor && tile.number <= 0) return
-            when (buildingType){
+            when (buildingType) {
                 BuildingType.Drill -> {
                     if (tile.isRevealed) return
                 }
+
                 BuildingType.Extractor -> {
                     if (!tile.isRevealed) return
                     if (tile.number <= 0) return
                 }
+
                 else -> {
                     if (!tile.isRevealed) return
                 }
             }
-            // building cost and actual build call
+            // build call
             changeMoney(-buildingType.cost)
             gridManager.build(tile.x, tile.y, buildingType)
-            if (!keys.shift) {
+            unitManager.updateFlowField()
+            if (!input.keys.pressing(Key.SHIFT)) {
                 currBuildingType = null
                 ui.onBuildingTypeChange(null)
             }
@@ -106,14 +115,21 @@ class GameplayScene : Scene() {
             ui.onBuildingTypeChange(null)
             null
         } else {
-            if (money < buildingType.cost) {
-                ui.onNotEnoughMoney()
-                null
-            } else {
+            if (hasEnoughMoney(buildingType.cost)) {
                 ui.onBuildingTypeChange(buildingType)
                 buildingType
-            }
+            } else null
         }
+    }
+
+    private fun onBuildingDestroyed(tileInfo: TileInfo) {
+        unitManager.updateFlowField()
+    }
+
+    private fun hasEnoughMoney(cost: Long): Boolean {
+        if (money >= cost) return true
+        ui.onNotEnoughMoney()
+        return false
     }
 
     private fun changeMoney(diff: Long) {
