@@ -2,7 +2,9 @@ package de.lms.gj10
 
 //TODO:
 // bases
+// attack function
 // bugfix shift
+// background image
 // turrets
 
 
@@ -17,6 +19,7 @@ private data class BuildingData(
     var image : Image,
     var type: BuildingType,
     var timeLeft: Int = 0,
+    var hp: Int = 1,
 )
 
 private data class GridElement(
@@ -70,7 +73,7 @@ class GridManager(
             }
         }
         build(gridWidth-1,gridHeight-1, BuildingType.Base)
-        build(0,0, BuildingType.Base)
+        build(0,0, BuildingType.Nest)
         gridElements.sortBy { it.id }
     }
 
@@ -96,6 +99,23 @@ class GridManager(
             building.timeLeft = 5
             building.image.addFixedUpdater(1.timesPerSecond) { drilling(x,y,building) }
         }
+        if (building.type == BuildingType.Nest) {
+            building.image.scale *= 2
+        }
+        if (building.type == BuildingType.Base){
+            building.image.scale *= 2
+            building.image.position((x-1)* tileSize, (y-1)* tileSize)
+        }
+    }
+
+    fun attack(x : Int, y : Int, damage : Int) : Boolean{
+        val building = gridElements[mineSweeper[x,y].id].building ?: return false
+        building.hp -= damage
+        if (building.hp <= 0) {
+            building.image.removeFromParent()
+            gridElements[mineSweeper[x,y].id].building = null
+        }
+        return true
     }
 
     private fun drilling(x : Int, y : Int, building : BuildingData){
@@ -103,6 +123,7 @@ class GridManager(
         if (building.timeLeft > 0) return
         building.timeLeft = 0
         gridElements[mineSweeper[x,y].id].building?.image?.removeFromParent()
+        gridElements[mineSweeper[x,y].id].building = null
         reveal(x,y)
     }
 
@@ -127,6 +148,8 @@ class GridManager(
         }
         img.position(x * tileSize, y * tileSize)
         img.scale = tileSize / img.size.width
+        if (x <= 1 && y <= 1) return img
+        if (x >= gridWidth-2 && y >= gridHeight-2) return img
         img.onClick { clickPreProcessing(x, y) }
         return img
     }

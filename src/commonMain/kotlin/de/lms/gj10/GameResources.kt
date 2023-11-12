@@ -13,7 +13,6 @@ suspend fun initializeGameResources() {
         GameResources.Tiles(
             hidden = img("tiles/hidden.png"),
             bomb = img("icons/bomb.png"),
-            nest = img("sprites/Nest.png"),
             stone = img("sprites/stone.png"),
             empty = img("tiles/empty.png"),
             unknown = img("icons/question_mark.png"),
@@ -26,6 +25,7 @@ suspend fun initializeGameResources() {
                 BuildingType.Refinery to img("sprites/BuildingRedRefinery.png"),
                 BuildingType.Turret to img("sprites/BuildingRedTurret.png"),
                 BuildingType.Turret2 to img("sprites/BuildingRedTurret2.png"),
+                BuildingType.Nest to img("sprites/Nest.png"),
             ),
             units = mapOf(
                 UnitType.Soldier to img("sprites/UnitRedSoldier.png"),
@@ -58,7 +58,6 @@ class GameResources(
     class Tiles(
         val hidden: Bitmap,
         val bomb: Bitmap,
-        val nest: Bitmap,
         val stone: Bitmap,
         val empty: Bitmap,
         val unknown: Bitmap,
