@@ -28,7 +28,7 @@ class GameUi(
     private val textPosX = windowWidth - textWidth - defaultSpacingX
 
     private val textMoney: TextBlock
-    private var money: Long = 0
+    private var money: Long = 100
     private val textScore: TextBlock
     private val btnBuildingExcavator: UIButton
     private val btnBuildingExtractor: UIButton
@@ -96,7 +96,7 @@ class GameUi(
 
     init {
         textMoney = container.textBlock(
-            getMoneyText(0),
+            getMoneyText(money),
             size = Size(textWidth, textHeight)
         )
         textMoney.position(textPosX, defaultSpacingX)

@@ -12,16 +12,16 @@ import korlibs.time.*
 import korlibs.korge.input.*
 
 class GameplayScene : Scene() {
-    private lateinit var gridManager: GridManager
-    private lateinit var unitManager: UnitManager
-    private lateinit var ui: GameUi
-    private var money = 0L
+    lateinit var gridManager: GridManager
+    lateinit var unitManager: UnitManager
+    lateinit var ui: GameUi
+    private var money = 100L
     private var currBuildingType: BuildingType? = null
 
     override suspend fun SContainer.sceneMain() {
         initializeGameResources() // must be the first thing here!
 
-        gridManager = GridManager(this, this@GameplayScene::onTileClicked, this@GameplayScene::onBuildingDestroyed)
+        gridManager = GridManager(this, this@GameplayScene)
         gridManager.initializeGrid()
 
         unitManager = UnitManager(this, gridManager)
@@ -69,7 +69,7 @@ class GameplayScene : Scene() {
         changeMoney(income.toLong())
     }
 
-    private fun onTileClicked(tileInfo: TileInfo, button: MouseButton) {
+    fun onTileClicked(tileInfo: TileInfo, button: MouseButton) {
         if (button == MouseButton.RIGHT) {
             currBuildingType = null
             ui.onBuildingTypeChange(null)
@@ -142,7 +142,7 @@ class GameplayScene : Scene() {
         }
     }
 
-    private fun onBuildingDestroyed(tileInfo: TileInfo) {
+    fun onBuildingDestroyed(tileInfo: TileInfo) {
         unitManager.updateFlowField()
     }
 
