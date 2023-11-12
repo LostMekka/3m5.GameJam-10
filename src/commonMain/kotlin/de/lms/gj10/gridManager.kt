@@ -13,6 +13,7 @@ import korlibs.image.bitmap.*
 import korlibs.image.color.*
 import korlibs.image.vector.*
 import korlibs.korge.input.*
+import korlibs.korge.render.SDFShaders.x
 import korlibs.korge.view.*
 import korlibs.math.geom.*
 import korlibs.math.geom.Line
@@ -22,6 +23,7 @@ import kotlin.math.*
 
 private data class BuildingData(
     var image : Image,
+    var tempImg : Image? = null,
     var type: BuildingType,
     var timeLeft: Int = 0,
     var range: Double = 10.0,
@@ -116,7 +118,7 @@ class GridManager(
             }
             BuildingType.Turret -> {
                 building.timeLeft = 1 // shooting frequency
-                building.range = 10.0
+                building.range = 2.0
                 building.image.addFixedUpdater(2.timesPerSecond) { shoot(mineSweeper[x,y].id, 10) }
             }
             BuildingType.Nest -> {
@@ -154,34 +156,47 @@ class GridManager(
         val y = gridElements[elemId].y.toDouble()
         val target = scene.unitManager.listEnemies()
             .firstOrNull{enemy -> (turret.range * turret.range) >= Point2.distanceSquared(x, y, enemy.x / tileSize, enemy.y / tileSize)}
-            ?: return
-        scene.unitManager.damageEnemy(target.id, damage)
-        println("Shooting from $x,$y to ${target.x/tileSize},${target.y / tileSize}")
+        if (target == null){
+            if (x+y <= turret.range) attack(0,0,damage)
+        }
+        else {
+            scene.unitManager.damageEnemy(target.id, damage)
+        }
+        turret.tempImg = Image(gameResources.tiles.boom)
+        turret.tempImg?.position(x * tileSize, y * tileSize)
+        turret.tempImg?.addFixedUpdater(3.timesPerSecond){ tempImgDestroy(elemId) }
     }
 
     private fun explode(x: Int, y: Int) {
+        mineSweeper[x, y].number = 0
+        reveal(x, y)
         for (dx in -1..1) {
             for (dy in -1..1) {
-                if (dx == 0 && dy == 0) continue
-                reveal(x + dx, y + dy)
+                for (target in scene.unitManager.listEnemies()
+                    .filter { enemy -> 2 >= Point2.distanceSquared(x.toDouble(), y.toDouble(), enemy.x / tileSize, enemy.y / tileSize) }) {
+                    scene.unitManager.damageEnemy(target.id, 999)
+                }
+                val tile = mineSweeper[x + dx, y + dy]
+                tile.number--
+                if (tile.number < 0) mineSweeper[x + dx, y + dy].number = 0
                 val elem = gridElements[mineSweeper[x + dx, y + dy].id]
-                elem.image.removeFromParent()
-                elem.image = tileImg(x + dx, y + dy, 2)
+                if (tile.isRevealed) {
+                    reveal(tile.x, tile.y)
+                    //elem.image.removeFromParent()
+                    //elem.image = tileImg(tile.x, tile.y, elem.imageNum)
+                }
                 if (elem.building != null) {
                     elem.building?.image?.removeFromParent()
                     gridElements[mineSweeper[x, y].id].building = null
                     scene.onBuildingDestroyed(TileInfo(tile = mineSweeper[x, y], buildingType = elem.building?.type))
                 }
-                for (target in scene.unitManager.listEnemies()
-                    .filter { enemy -> 2 >= Point2.distanceSquared(x.toDouble(), y.toDouble(), enemy.x / tileSize, enemy.y / tileSize) }) {
-                    scene.unitManager.damageEnemy(target.id, 999)
-                }
+
             }
         }
     }
 
-    private fun imgDestroySelf(img: Image){
-        img.removeFromParent()
+    private fun tempImgDestroy(id: Int){
+        gridElements[id].building?.tempImg?.removeFromParent()
     }
 
     private fun drilling(x : Int, y : Int, building : BuildingData){
@@ -226,8 +241,7 @@ class GridManager(
     }
     private fun clickPreProcessing(x: Int, y: Int, mouseEvents: MouseEvents){
         val tile = mineSweeper[x, y]
-        val gridElement =  gridElements[tile.id]
-        if (!tile.isRevealed && tile.isBomb) explode(x,y)
+        val gridElement = gridElements[tile.id]
         scene.onTileClicked(TileInfo(tile = tile, buildingType = gridElement.building?.type), mouseEvents.button)
     }
 }
