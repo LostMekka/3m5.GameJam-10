@@ -50,17 +50,8 @@ class GameplayScene : Scene() {
         }
     }
 
-    private fun onButtonClicked(type: BuildingType) {
-        println("button $type clicked")
-        val buildingType = when (type) {
-            BuildingType.Base -> BuildingType.Base
-            BuildingType.Factory -> BuildingType.Factory
-            BuildingType.Extractor -> BuildingType.Extractor
-            BuildingType.Drill -> BuildingType.Drill
-            BuildingType.Turret -> BuildingType.Turret
-            BuildingType.Turret2 -> BuildingType.Turret2
-            BuildingType.Refinery -> BuildingType.Refinery
-        }
+    private fun onButtonClicked(buildingType: BuildingType) {
+        println("button $buildingType clicked")
         currBuildingType = if (currBuildingType == buildingType) {
             ui.onBuildingTypeChange(null)
             null
@@ -69,7 +60,7 @@ class GameplayScene : Scene() {
                 ui.onNotEnoughMoney()
                 null
             } else {
-                ui.onBuildingTypeChange(type)
+                ui.onBuildingTypeChange(buildingType)
                 buildingType
             }
         }
