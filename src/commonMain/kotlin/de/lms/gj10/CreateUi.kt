@@ -89,13 +89,12 @@ class GameUi(
 
     private fun SContainer.generateButton(
         btnSize: Int = 80,
-        btnPosX: Int = 20,
-        btnPosY: Int = 20,
+        btnPosX: Int = windowWidth,
+        btnPosY: Int = windowHeight,
         spacing: Int = defaultSpacing,
         mainImg: Bitmap,
         hotKey: Char? = null,
         type: BuildingType
-//        hotKey: Bitmap?,
     ): UIButton {
         // Initial Create button
         val newBtn = uiButton() {
