@@ -58,6 +58,7 @@ class MyScene : Scene() {
             changeMoney(-10L)
             gridManager.build(tile.x, tile.y, buildingType)
             currBuildingType = null
+            ui.onBuildingTypeChange(null)
         }
     }
 
