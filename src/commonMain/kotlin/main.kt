@@ -14,14 +14,19 @@ suspend fun main() = Korge(windowSize = Size(windowWidth, windowHeight), backgro
     sceneContainer.changeTo { MyScene() }
 }
 
+data class BuildingStats(
+    val cost: Long,
+    val threatLevel: Long,
+)
 val buildingCosts = mapOf(
-    BuildingType.Excavator to 25L,
-    BuildingType.Extractor to 25L,
-    BuildingType.Turret to 25L,
+    BuildingType.Excavator to BuildingStats(25L, 1L),
+    BuildingType.Extractor to BuildingStats(25L, 1L),
+    BuildingType.Turret to BuildingStats(25L, 1L),
 )
 
 class MyScene : Scene() {
     private lateinit var gridManager: GridManager
+    private lateinit var unitManager: UnitManager
     private lateinit var ui: GameUi
     private var money = 0L
     private var currBuildingType: BuildingType? = null
@@ -31,6 +36,8 @@ class MyScene : Scene() {
 
         gridManager = GridManager(this, this@MyScene::onTileClicked)
         gridManager.initializeGrid()
+
+        unitManager = UnitManager(this, gridManager)
 
         ui = GameUi(this, this@MyScene::onButtonClicked)
 
@@ -53,7 +60,7 @@ class MyScene : Scene() {
         if (buildingType == null) {
             changeMoney(tile.number.toLong())
         } else {
-            changeMoney(buildingCosts.getValue(buildingType))
+            changeMoney(buildingCosts.getValue(buildingType).cost)
             gridManager.build(tile.x, tile.y, buildingType)
             if (!keys.shift) {
                 currBuildingType = null
@@ -77,7 +84,9 @@ class MyScene : Scene() {
             ui.onBuildingTypeChange(null)
             null
         } else {
-            val cost = buildingCosts[buildingType] ?: 1L.also { println("WARNING: no cost for building $buildingType configured") }
+            val cost = buildingCosts[buildingType]
+                ?.cost
+                ?: 1L.also { println("WARNING: no cost for building $buildingType configured") }
             if (money < cost) {
                 ui.onNotEnoughMoney()
                 null

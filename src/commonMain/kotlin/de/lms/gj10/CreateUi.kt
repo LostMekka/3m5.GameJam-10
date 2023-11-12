@@ -100,19 +100,19 @@ class GameUi(
             mainImg = gameResources.tiles.buildings.getValue(BuildingType.Excavator),
             type = BuildingType.Excavator,
             hotKey = 'e',
-            cost = buildingCosts.getValue(BuildingType.Excavator),
+            cost = buildingCosts.getValue(BuildingType.Excavator).cost,
         )
         btnBuildingExtractor = container.generateButton(
             mainImg = gameResources.tiles.buildings.getValue(BuildingType.Extractor),
             type = BuildingType.Extractor,
             hotKey = 'w',
-            cost = buildingCosts.getValue(BuildingType.Extractor),
+            cost = buildingCosts.getValue(BuildingType.Extractor).cost,
         )
         btnBuildingTurret = container.generateButton(
             mainImg = gameResources.tiles.buildings.getValue(BuildingType.Turret),
             type = BuildingType.Turret,
             hotKey = 'q',
-            cost = buildingCosts.getValue(BuildingType.Turret),
+            cost = buildingCosts.getValue(BuildingType.Turret).cost,
         )
     }
 
