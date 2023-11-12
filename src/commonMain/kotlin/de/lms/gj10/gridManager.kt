@@ -121,6 +121,8 @@ class GridManager(
         return true
     }
 
+    fun shoot()
+
     private fun drilling(x : Int, y : Int, building : BuildingData){
         building.timeLeft--
         if (building.timeLeft > 0) return
@@ -128,6 +130,7 @@ class GridManager(
         gridElements[mineSweeper[x,y].id].building?.image?.removeFromParent()
         gridElements[mineSweeper[x,y].id].building = null
         reveal(x,y)
+        onBuildingDestroy(TileInfo(tile= mineSweeper[x,y], buildingType= building.type))
     }
 
     private fun tileImg(x : Int,y : Int, imageNum: Int) : Image {
