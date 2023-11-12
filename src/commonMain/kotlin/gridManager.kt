@@ -18,7 +18,6 @@ data class BuildingData(
     var image : Image,
     var type: BuildingType,
 )
-private data class GridElement(
 
 enum class UnitType {
     Soldier,

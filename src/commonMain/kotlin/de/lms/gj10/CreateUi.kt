@@ -28,7 +28,7 @@ class GameUi(
     // private val scoreTextField: Text,
     private val container : SContainer,
     private val onBuildBuildingBtnPress : (BuildingType) -> Unit,
-    private val onBuildUnitBtnPress : (UnitType) -> Unit,
+//    private val onBuildUnitBtnPress : (UnitType) -> Unit,
 ) {
     private val textMoney: TextBlock
     private val myBtn: UIButton

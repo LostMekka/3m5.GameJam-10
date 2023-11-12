@@ -61,10 +61,16 @@ class MyScene : Scene() {
         }
     }
 
-    private fun onButtonClicked(type: UiBtnType) {
+    private fun onButtonClicked(type: BuildingType) {
         println("button $type clicked")
         val buildingType = when (type) {
-            UiBtnType.BuildFactory -> BuildingType.Factory
+            BuildingType.Base -> BuildingType.Base
+            BuildingType.Factory -> BuildingType.Factory
+            BuildingType.Extractor -> BuildingType.Extractor
+            BuildingType.Excavator -> BuildingType.Excavator
+            BuildingType.Turret -> BuildingType.Turret
+            BuildingType.Turret2 -> BuildingType.Turret2
+            BuildingType.Refinery -> BuildingType.Refinery
         }
         currBuildingType = if (currBuildingType == buildingType) {
             ui.onBuildingTypeChange(null)
