@@ -23,7 +23,7 @@ private data class GridElement(
     var image : Image,
     var x : Int,
     var y : Int,
-    var building : BuildingData?,
+    var building : BuildingData? = null,
     val id : Int,
     var imageNum : Int = -1, // 0 = hidden, 1 = bomb, 2 = empty uncovered, 3-10 = numbers(1-8), 10+ = buildings
     )
@@ -51,7 +51,7 @@ class GridManager(
             .filter { it.building?.type == BuildingType.Extractor }
             .sumOf { mineSweeper[it.x, it.y].number }
     }
-    val gridInfo : List<TileInfo> get() = mineSweeper.map { TileInfo(it, gridElements[it.id].building?.type) }
+    val gridInfo : List<TileInfo> get() = mineSweeper.map { TileInfo(tile = it, buildingType = gridElements[it.id].building?.type) }
     fun hasRevealedNeighbor(x : Int , y : Int) : Boolean {
         for (dx in -1..1) {
             for (dy in -1..1) {
@@ -66,9 +66,11 @@ class GridManager(
             for (y in 0 until mineSweeper.height) {
                 val tile = mineSweeper[x,y]
                 val img = tileImg(x,y,tile.imageNum)
-                gridElements += GridElement(img,x, y, null, tile.id ,tile.imageNum)
+                gridElements += GridElement(image = img,x = x, y = y, id = tile.id, imageNum = tile.imageNum)
             }
         }
+        build(gridWidth-1,gridHeight-1, BuildingType.Base)
+        build(0,0, BuildingType.Base)
         gridElements.sortBy { it.id }
     }
 
@@ -85,7 +87,7 @@ class GridManager(
 
     fun build(x: Int, y : Int, buildingType : BuildingType){
         val bitmap = gameResources.tiles.buildings[buildingType] ?: return
-        val building = BuildingData(container.image(bitmap), buildingType)
+        val building = BuildingData(image = container.image(bitmap), type = buildingType)
         val tile = mineSweeper[x, y]
         gridElements[tile.id].building = building
         building.image.position(x * tileSize, y * tileSize)
@@ -131,6 +133,6 @@ class GridManager(
     private fun clickPreProcessing(x : Int, y : Int){
         val tile = mineSweeper[x, y]
         val gridElement =  gridElements[tile.id]
-        onTileClick(TileInfo(tile, gridElement.building?.type))
+        onTileClick(TileInfo(tile = tile, buildingType = gridElement.building?.type))
     }
 }
