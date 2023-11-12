@@ -22,9 +22,18 @@ class UnitManager(
 
     private lateinit var flowField: FlowField
     private val unitsById = mutableMapOf<Int, UnitEntry>()
+    private var threatLevel = 1L
+    private var threatCounter = 1L
 
     init {
         updateFlowField()
+        rootContainer.addFixedUpdater(10.timesPerSecond) {
+            threatCounter += threatLevel
+            while (threatCounter >= 500) {
+                addUnit()
+                threatCounter -= 500
+            }
+        }
     }
 
     fun updateFlowField() {
@@ -34,7 +43,7 @@ class UnitManager(
     fun addUnit() {
         val container = rootContainer.container()
         val unitId = nextUnitId++
-        unitsById[unitId] = UnitEntry(container, 100, 0.4f)
+        unitsById[unitId] = UnitEntry(container, 100 + (threatLevel / 5).toInt(), 0.4f)
         container.position(
             x = Random.nextDouble(0.6, 2.5) * tileSize,
             y = Random.nextDouble(0.6, 2.5) * tileSize,
@@ -73,6 +82,10 @@ class UnitManager(
         val unit = unitsById[enemyId] ?: return
         unit.hp -= damage
         if (unit.hp <= 0) removeUnit(enemyId)
+    }
+
+    fun onThreatLevelChanged(newValue: Long) {
+        threatLevel = newValue
     }
 }
 

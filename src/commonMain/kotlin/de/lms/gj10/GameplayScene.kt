@@ -17,6 +17,7 @@ class GameplayScene : Scene() {
     lateinit var unitManager: UnitManager
     lateinit var ui: GameUi
     private var money = 100L
+    private var threatLevel = 1L
     private var currBuildingType: BuildingType? = null
     private var musicChannel: SoundChannel? = null
 
@@ -30,8 +31,7 @@ class GameplayScene : Scene() {
 
         ui = GameUi(this, this@GameplayScene::onButtonClicked)
 
-        addFixedUpdater(1.timesPerSecond) { addIncome() }
-        addFixedUpdater(0.2.timesPerSecond) { unitManager.addUnit() }
+        addFixedUpdater(0.2.timesPerSecond) { addIncome() }
 
         addEscapeMenu()
         musicChannel = gameResources.audio.musicGameplay.playForever().also {
@@ -113,6 +113,7 @@ class GameplayScene : Scene() {
             }
             // build call
             changeMoney(-buildingType.cost)
+            changeThreatLevel(buildingType.threatLevel)
             gridManager.build(tile.x, tile.y, buildingType)
             unitManager.updateFlowField()
             if (!input.keys.pressing(Key.SHIFT)) {
@@ -167,5 +168,10 @@ class GameplayScene : Scene() {
     private fun changeMoney(diff: Long) {
         money += diff
         ui.onMoneyChanged(money)
+    }
+
+    private fun changeThreatLevel(diff: Long) {
+        threatLevel += diff
+        unitManager.onThreatLevelChanged(threatLevel)
     }
 }
