@@ -73,7 +73,7 @@ class GridManager(
         val oldTile = mineSweeper[x,y]
         val revealedTiles = mineSweeper.autoReveal(oldTile)
         for (i in 0 until revealedTiles.size) {
-            var gridElement = gridElements[revealedTiles[i].id]
+            val gridElement = gridElements[revealedTiles[i].id]
             gridElement.image.removeFromParent()
             gridElement.imageNum = revealedTiles[i].imageNum
             gridElement.image = tileImg(x, y, gridElement.imageNum)
