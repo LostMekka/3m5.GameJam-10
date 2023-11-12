@@ -90,6 +90,5 @@ class MyScene : Scene() {
     private fun changeMoney(diff: Long) {
         money += diff
         ui.onMoneyChanged(money)
-        println("money is now $money")
     }
 }
