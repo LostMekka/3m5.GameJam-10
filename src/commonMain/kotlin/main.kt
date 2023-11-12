@@ -14,7 +14,7 @@ suspend fun main() = Korge(windowSize = Size(windowWidth, windowHeight), backgro
     sceneContainer.changeTo { MyScene() }
 }
 
-private val buildingCosts = mapOf(
+val buildingCosts = mapOf(
     BuildingType.Factory to 25,
 )
 
