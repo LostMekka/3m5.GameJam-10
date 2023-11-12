@@ -23,7 +23,7 @@ class GameUi(
     private var btnCount: Int = 0
     private val defaultSpacing: Int = 8
     private val costTextBlocks: MutableMap<BuildingType, TextBlock> = mutableMapOf()
-    private val selectIcons: MutableMap<BuildingType, TextBlock> = mutableMapOf()
+    private val selectIcons: MutableMap<BuildingType, Image> = mutableMapOf()
 
     private val textWidth = 100f
     private val textHeight = 48f
@@ -63,9 +63,9 @@ class GameUi(
 
     }
     fun onBuildingTypeChange(buildingType: BuildingType?) {
-        updateBtnActive(buildingType == BuildingType.Excavator, btnBuildingExcavator)
-        updateBtnActive(buildingType == BuildingType.Extractor, btnBuildingExtractor)
-        updateBtnActive(buildingType == BuildingType.Turret, btnBuildingTurret)
+        updateBtnActive(buildingType == BuildingType.Excavator, btnBuildingExcavator, BuildingType.Excavator)
+        updateBtnActive(buildingType == BuildingType.Extractor, btnBuildingExtractor, BuildingType.Extractor)
+        updateBtnActive(buildingType == BuildingType.Turret, btnBuildingTurret, BuildingType.Turret)
     }
     fun onBuildingCostChange(buildingType: BuildingType, newCost: Long) {
         // Retrieve the cost TextBlock associated with the buildingType
@@ -75,11 +75,14 @@ class GameUi(
         costTextBlock?.text = getCostText(newCost)
     }
 
-    private fun updateBtnActive(active: Boolean, btn: UIButton) {
+    private fun updateBtnActive(active: Boolean, btn: UIButton, buildingType: BuildingType?) {
+        println(buildingType)
+        val currentSelectIcon = selectIcons[buildingType]
+        println(currentSelectIcon)
         if (active) {
-            btn.colorMul = Colors.RED
+            currentSelectIcon?.colorMul = Colors.WHITE
         } else {
-            btn.colorMul = Colors.BLUE
+            currentSelectIcon?.colorMul = Colors.TRANSPARENT_WHITE
         }
     }
 
@@ -184,14 +187,16 @@ class GameUi(
             }
 
             // Selected Image
-            image(gameResources.images.btnSelectedIcon) {
+            val selectImg = image(gameResources.images.btnSelectedIcon) {
                 smoothing = false
                 size(btnSize, btnSize)
-                colorMul = Colors.WHITE
                 colorMul = Colors.TRANSPARENT_WHITE
                 zIndex=-1.0
             }
+            // Store the reference to the cost TextBlock
+            selectIcons[type] = selectImg
 
+            // Cost Text
             uiMaterialLayer() {
                 size(btnSize * .7, 20)
                 position(btnSize * .26, -btnSize * .06)
@@ -209,6 +214,7 @@ class GameUi(
             // Store the reference to the cost TextBlock
             costTextBlocks[type] = costTextBlock
 
+            // hotkey
             val hotKeyBitmap =  gameResources.images.hotkeyBtnBitmapMap[validHotKey]
             if (validHotKey != null && hotKeyBitmap != null) {
                 // Hotkey Image
