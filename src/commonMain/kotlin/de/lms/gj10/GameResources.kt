@@ -48,6 +48,7 @@ suspend fun initializeGameResources() {
             hotkeyBtnBitmapMap = imgMapFromAToZ(),
         ),
         GameResources.Audio(
+            musicGameplay = resourcesVfs["sfx/3m5gj10.mp3"].readMusic(),
             sfxBtnSelect = resourcesVfs["sfx/sfx_btn_select.wav"].readSound(),
             sfxBtnDeselect = resourcesVfs["sfx/sfx_btn_deselect.wav"].readSound(),
             sfxBtnSelectInvalid = resourcesVfs["sfx/sfx_btn_select_invalid.wav"].readSound(),
@@ -88,6 +89,7 @@ class GameResources(
     )
 
     class Audio(
+        val musicGameplay: Sound,
         val sfxBtnSelect: Sound,
         val sfxBtnDeselect: Sound,
         val sfxBtnSelectInvalid: Sound,
