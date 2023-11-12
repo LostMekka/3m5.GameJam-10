@@ -29,6 +29,7 @@ class GameplayScene : Scene() {
         ui = GameUi(this, this@GameplayScene::onButtonClicked)
 
         addFixedUpdater(1.timesPerSecond) { addIncome() }
+        addFixedUpdater(0.2.timesPerSecond) { unitManager.addUnit() }
 
         var menuOpen = false
         fun openMenuWindow() {
@@ -99,6 +100,7 @@ class GameplayScene : Scene() {
             // build call
             changeMoney(-buildingType.cost)
             gridManager.build(tile.x, tile.y, buildingType)
+            unitManager.updateFlowField()
             if (!input.keys.pressing(Key.SHIFT)) {
                 currBuildingType = null
                 ui.onBuildingTypeChange(null)
